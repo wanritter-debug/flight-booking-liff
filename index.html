@@ -259,7 +259,6 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
-            user-select: none;
         }
 
         .counter-btn:hover:not(:disabled) {
@@ -445,7 +444,7 @@
                         <small class="error">กรุณากรอกต้นทาง</small>
                     </div>
 
-                    <button class="swap-btn" id="swapBtn" type="button">
+                    <button class="swap-btn" onclick="swapLocations()" id="swapBtn">
                         <svg viewBox="0 0 24 24">
                             <path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/>
                         </svg>
@@ -485,9 +484,9 @@
                         <p>อายุ 12 ปีขึ้นไป</p>
                     </div>
                     <div class="counter">
-                        <button class="counter-btn" type="button" data-type="adult" data-action="decrease">−</button>
+                        <button class="counter-btn" onclick="changeCount('adult', -1)" type="button">−</button>
                         <span class="counter-value" id="adult-count">1</span>
-                        <button class="counter-btn" type="button" data-type="adult" data-action="increase">+</button>
+                        <button class="counter-btn" onclick="changeCount('adult', 1)" type="button">+</button>
                     </div>
                 </div>
 
@@ -497,9 +496,9 @@
                         <p>อายุ 2-11 ปี</p>
                     </div>
                     <div class="counter">
-                        <button class="counter-btn" type="button" data-type="child" data-action="decrease">−</button>
+                        <button class="counter-btn" onclick="changeCount('child', -1)" type="button">−</button>
                         <span class="counter-value" id="child-count">0</span>
-                        <button class="counter-btn" type="button" data-type="child" data-action="increase">+</button>
+                        <button class="counter-btn" onclick="changeCount('child', 1)" type="button">+</button>
                     </div>
                 </div>
 
@@ -509,9 +508,9 @@
                         <p>อายุต่ำกว่า 2 ปี</p>
                     </div>
                     <div class="counter">
-                        <button class="counter-btn" type="button" data-type="infant" data-action="decrease">−</button>
+                        <button class="counter-btn" onclick="changeCount('infant', -1)" type="button">−</button>
                         <span class="counter-value" id="infant-count">0</span>
-                        <button class="counter-btn" type="button" data-type="infant" data-action="increase">+</button>
+                        <button class="counter-btn" onclick="changeCount('infant', 1)" type="button">+</button>
                     </div>
                 </div>
             </div>
@@ -538,7 +537,7 @@
                 </div>
             </div>
 
-            <button class="submit-btn" id="submitBtn" type="button">เช็คราคา</button>
+            <button class="submit-btn" id="submitBtn" onclick="submitBooking()" type="button">เช็คราคา</button>
             
             <p class="footer-note">
                 💬 เจ้าหน้าที่จะตอบกลับโดยเร็วที่สุดครับ/ค่ะ
@@ -555,9 +554,9 @@
     </div>
 
     <script>
-        // ⚠️ Configuration - ต้องเปลี่ยนก่อนใช้งานจริง
+        // Configuration
         const CONFIG = {
-            GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzHCDj9qT3iow-Tjftmwztiqz77HkPW8teCM1PF7_KT5xSZmXwzTaJpLNM2lqa-tCuTqQ/exec',
+            GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
             LIFF_ID: '2008429094-y2WmXkYQ',
             MAX_RETRIES: 3,
             TIMEOUT: 15000
@@ -567,7 +566,7 @@
         let userProfile = null;
         let isSubmitting = false;
 
-        // ✅ Utility Functions
+        // Utility Functions
         function formatDateInput(input) {
             let value = input.value.replace(/\D/g, '');
             if (value.length >= 2) {
@@ -697,7 +696,7 @@
             return `REQ${timestamp}${random}`;
         }
 
-        // ✅ Date Input Setup
+        // Date Input Setup
         function setupDateInput(inputId) {
             const input = document.getElementById(inputId);
             
@@ -721,9 +720,10 @@
 
         setupDateInput('departDate');
         setupDateInput('returnDate');
+
         document.getElementById('departDate').value = getTodayThaiDate();
 
-        // ✅ Trip type change handler
+        // Trip type change handler
         document.querySelectorAll('input[name="trip"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 const returnInput = document.getElementById('returnDate');
@@ -739,10 +739,10 @@
             });
         });
 
-        // ✅ LIFF Initialization
+        // LIFF Initialization
         window.onload = function() {
             if (typeof liff === 'undefined') {
-                console.warn('⚠️ LIFF SDK not loaded - running in demo mode');
+                console.warn('LIFF SDK not loaded - running in demo mode');
                 return;
             }
             
@@ -754,22 +754,21 @@
                             document.getElementById('userInfo').style.display = 'flex';
                             document.getElementById('userName').textContent = profile.displayName;
                             document.getElementById('userPicture').src = profile.pictureUrl;
-                            console.log('✅ User loaded:', profile.displayName);
                         }).catch(err => {
-                            console.error('❌ Profile error:', err);
+                            console.error('Profile error:', err);
                         });
                     }
                 })
                 .catch(err => {
-                    console.error('❌ LIFF error:', err);
+                    console.error('LIFF error:', err);
                 });
         };
 
-        // ✅ Location Swap
-        document.getElementById('swapBtn').addEventListener('click', function() {
+        // Location Swap
+        function swapLocations() {
             const from = document.getElementById('from');
             const to = document.getElementById('to');
-            const swapBtn = this;
+            const swapBtn = document.getElementById('swapBtn');
             
             swapBtn.disabled = true;
             [from.value, to.value] = [to.value, from.value];
@@ -780,47 +779,13 @@
 
             clearError('fromGroup');
             clearError('toGroup');
-        });
+        }
 
-        // ✅ Passenger Counter - Fixed Event Delegation
-        document.querySelectorAll('.counter-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const type = this.dataset.type;
-                const action = this.dataset.action;
-                const delta = action === 'increase' ? 1 : -1;
-                
-                changeCount(type, delta);
-            });
-        });
-
+        // Passenger Counter - แก้ไขฟังก์ชันนี้
         function changeCount(type, delta) {
+            console.log(`Changing ${type} by ${delta}. Current: ${counts[type]}`);
+            
             const newValue = counts[type] + delta;
             
-            // Prevent invalid values
-            if (type === 'adult' && newValue < 1) return;
-            if (newValue < 0 || newValue > 9) return;
-            
-            // Infant validation
-            if (type === 'infant' && newValue > counts.adult) {
-                showMessage('error', '⚠️ จำนวนทารกต้องไม่เกินจำนวนผู้ใหญ่');
-                return;
-            }
-            
-            if (type === 'adult' && newValue < counts.infant) {
-                showMessage('error', '⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารกมากกว่า');
-                return;
-            }
-
-            // Total passengers validation
-            const tempCounts = {...counts, [type]: newValue};
-            const total = tempCounts.adult + tempCounts.child + tempCounts.infant;
-            if (total > 9) {
-                showMessage('error', '⚠️ จำนวนผู้โดยสารรวมต้องไม่เกิน 9 คน');
-                return;
-            }
-            
-            counts[type] = newValue;
-            document.getElementById(`${type}-count`).textContent = newValue
+            // ตรวจสอบเงื่อนไขต่างๆ
+            if (type === 'adult
