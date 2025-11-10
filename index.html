@@ -259,6 +259,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
+            user-select: none;
         }
 
         .counter-btn:hover:not(:disabled) {
@@ -350,6 +351,26 @@
             100% { transform: rotate(360deg); }
         }
 
+        .success-message {
+            display: none;
+            background: #4caf50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .error-message {
+            display: none;
+            background: #f44336;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
         @media (max-width: 600px) {
             .location-inputs {
                 flex-direction: column;
@@ -383,6 +404,9 @@
         </div>
 
         <div class="form-container">
+            <div class="success-message" id="successMessage"></div>
+            <div class="error-message" id="errorMessage"></div>
+
             <div class="trip-type">
                 <div class="radio-group">
                     <input type="radio" id="roundtrip" name="trip" value="ไป-กลับ" checked>
@@ -394,7 +418,6 @@
                 </div>
             </div>
 
-            <!-- บินตรง -->
             <div class="section">
                 <div class="input-group">
                     <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
@@ -404,7 +427,6 @@
                 </div>
             </div>
 
-            <!-- สายการบิน -->
             <div class="section">
                 <div class="section-title">✈️ สายการบิน</div>
                 <div class="input-group">
@@ -414,7 +436,6 @@
                 </div>
             </div>
 
-            <!-- เส้นทาง -->
             <div class="section">
                 <div class="section-title">✈️ เส้นทางการเดินทาง</div>
                 <div class="location-inputs">
@@ -424,7 +445,7 @@
                         <small class="error">กรุณากรอกต้นทาง</small>
                     </div>
 
-                    <button class="swap-btn" onclick="swapLocations()" id="swapBtn">
+                    <button class="swap-btn" id="swapBtn" type="button">
                         <svg viewBox="0 0 24 24">
                             <path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/>
                         </svg>
@@ -438,7 +459,6 @@
                 </div>
             </div>
 
-            <!-- วันที่ -->
             <div class="section">
                 <div class="section-title">📅 วันที่เดินทาง</div>
                 <div class="date-inputs">
@@ -457,7 +477,6 @@
                 </div>
             </div>
 
-            <!-- ผู้โดยสาร -->
             <div class="section">
                 <div class="section-title">👥 จำนวนผู้โดยสาร</div>
                 <div class="passenger-row">
@@ -466,9 +485,9 @@
                         <p>อายุ 12 ปีขึ้นไป</p>
                     </div>
                     <div class="counter">
-                        <button class="counter-btn" onclick="changeCount('adult', -1)">−</button>
+                        <button class="counter-btn" type="button" data-type="adult" data-action="decrease">−</button>
                         <span class="counter-value" id="adult-count">1</span>
-                        <button class="counter-btn" onclick="changeCount('adult', 1)">+</button>
+                        <button class="counter-btn" type="button" data-type="adult" data-action="increase">+</button>
                     </div>
                 </div>
 
@@ -478,9 +497,9 @@
                         <p>อายุ 2-11 ปี</p>
                     </div>
                     <div class="counter">
-                        <button class="counter-btn" onclick="changeCount('child', -1)">−</button>
+                        <button class="counter-btn" type="button" data-type="child" data-action="decrease">−</button>
                         <span class="counter-value" id="child-count">0</span>
-                        <button class="counter-btn" onclick="changeCount('child', 1)">+</button>
+                        <button class="counter-btn" type="button" data-type="child" data-action="increase">+</button>
                     </div>
                 </div>
 
@@ -490,14 +509,13 @@
                         <p>อายุต่ำกว่า 2 ปี</p>
                     </div>
                     <div class="counter">
-                        <button class="counter-btn" onclick="changeCount('infant', -1)">−</button>
+                        <button class="counter-btn" type="button" data-type="infant" data-action="decrease">−</button>
                         <span class="counter-value" id="infant-count">0</span>
-                        <button class="counter-btn" onclick="changeCount('infant', 1)">+</button>
+                        <button class="counter-btn" type="button" data-type="infant" data-action="increase">+</button>
                     </div>
                 </div>
             </div>
 
-            <!-- ชั้นที่นั่ง -->
             <div class="section">
                 <div class="section-title">💺 ชั้นที่นั่ง</div>
                 <div class="input-group">
@@ -510,7 +528,6 @@
                 </div>
             </div>
 
-            <!-- ข้อมูลติดต่อ -->
             <div class="section">
                 <div class="section-title">📞 ข้อมูลติดต่อ</div>
                 <div class="input-group" id="phoneGroup">
@@ -521,7 +538,7 @@
                 </div>
             </div>
 
-            <button class="submit-btn" id="submitBtn" onclick="submitBooking()">เช็คราคา</button>
+            <button class="submit-btn" id="submitBtn" type="button">เช็คราคา</button>
             
             <p class="footer-note">
                 💬 เจ้าหน้าที่จะตอบกลับโดยเร็วที่สุดครับ/ค่ะ
@@ -529,7 +546,6 @@
         </div>
     </div>
 
-    <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-content">
             <div class="spinner"></div>
@@ -539,16 +555,19 @@
     </div>
 
     <script>
-        // ⚠️ ตั้งค่าเริ่มต้น - ต้องเปลี่ยนก่อนใช้งานจริง
-        const GOOGLE_SCRIPT_URL = '1UAnM7ihb8zpFIEBbqtRMX5ZlVKJifSlNahifV_q59Qq6cwnzy1BSoHsW'; // ⚠️ ต้องเปลี่ยน
-        const LIFF_ID = '2008429094-y2WmXkYQ'; // ⚠️ ต้องเปลี่ยน
+        // ⚠️ Configuration - ต้องเปลี่ยนก่อนใช้งานจริง
+        const CONFIG = {
+            GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzHCDj9qT3iow-Tjftmwztiqz77HkPW8teCM1PF7_KT5xSZmXwzTaJpLNM2lqa-tCuTqQ/exec',
+            LIFF_ID: '2008429094-y2WmXkYQ',
+            MAX_RETRIES: 3,
+            TIMEOUT: 15000
+        };
         
         let counts = { adult: 1, child: 0, infant: 0 };
         let userProfile = null;
-        let requestNumber = null;
         let isSubmitting = false;
 
-        // ✅ ฟังก์ชันจัดการวันที่แบบไทย dd/mm/yyyy
+        // ✅ Utility Functions
         function formatDateInput(input) {
             let value = input.value.replace(/\D/g, '');
             if (value.length >= 2) {
@@ -568,7 +587,23 @@
             return `${day}/${month}/${year}`;
         }
 
-        // ✅ แก้ไข: เพิ่มการตรวจสอบวันที่ในอดีต
+        function isValidDate(day, month, year) {
+            if (day < 1 || day > 31 || month < 1 || month > 12 || year < 2500) {
+                return false;
+            }
+
+            const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            
+            const gregorianYear = year - 543;
+            const isLeap = (gregorianYear % 4 === 0 && gregorianYear % 100 !== 0) || 
+                           (gregorianYear % 400 === 0);
+            if (month === 2 && isLeap) {
+                daysInMonth[1] = 29;
+            }
+            
+            return day <= daysInMonth[month - 1];
+        }
+
         function validateThaiDate(dateStr, allowPast = false) {
             if (!dateStr) return false;
             const parts = dateStr.split('/');
@@ -578,11 +613,10 @@
             const month = parseInt(parts[1]);
             const year = parseInt(parts[2]);
             
-            if (day < 1 || day > 31 || month < 1 || month > 12 || year < 2500) {
+            if (!isValidDate(day, month, year)) {
                 return false;
             }
 
-            // ตรวจสอบวันที่ในอดีต
             if (!allowPast) {
                 const inputDate = new Date(thaiDateToISO(dateStr));
                 const today = new Date();
@@ -611,7 +645,59 @@
             return iso1 < iso2 ? -1 : iso1 > iso2 ? 1 : 0;
         }
 
-        // ✅ แก้ไข: เพิ่ม input validation แบบเข้มงวด
+        function validatePhone(phone) {
+            if (!phone) return true;
+            const cleanPhone = phone.replace(/[-\s]/g, '');
+            const phoneRegex = /^0[0-9]{8,9}$/;
+            return phoneRegex.test(cleanPhone);
+        }
+
+        function showError(groupId, message) {
+            const group = document.getElementById(groupId);
+            if (group) {
+                group.classList.add('has-error');
+                const errorEl = group.querySelector('.error');
+                if (errorEl && message) {
+                    errorEl.textContent = message;
+                }
+            }
+        }
+
+        function clearError(groupId) {
+            const group = document.getElementById(groupId);
+            if (group) {
+                group.classList.remove('has-error');
+            }
+        }
+
+        function showMessage(type, message) {
+            const messageEl = document.getElementById(type === 'success' ? 'successMessage' : 'errorMessage');
+            messageEl.textContent = message;
+            messageEl.style.display = 'block';
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 5000);
+        }
+
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            const submitBtn = document.getElementById('submitBtn');
+            if (show) {
+                overlay.classList.add('active');
+                submitBtn.disabled = true;
+            } else {
+                overlay.classList.remove('active');
+                submitBtn.disabled = false;
+            }
+        }
+
+        function generateRequestNumber() {
+            const timestamp = Date.now().toString().slice(-6);
+            const random = Math.random().toString(36).substring(2, 5).toUpperCase();
+            return `REQ${timestamp}${random}`;
+        }
+
+        // ✅ Date Input Setup
         function setupDateInput(inputId) {
             const input = document.getElementById(inputId);
             
@@ -635,37 +721,32 @@
 
         setupDateInput('departDate');
         setupDateInput('returnDate');
-
-        // ✅ แก้ไข: เพิ่ม error handling functions
-        function showError(groupId, message) {
-            const group = document.getElementById(groupId);
-            if (group) {
-                group.classList.add('has-error');
-                const errorEl = group.querySelector('.error');
-                if (errorEl && message) {
-                    errorEl.textContent = message;
-                }
-            }
-        }
-
-        function clearError(groupId) {
-            const group = document.getElementById(groupId);
-            if (group) {
-                group.classList.remove('has-error');
-            }
-        }
-
-        // ตั้งค่าวันที่เริ่มต้น
         document.getElementById('departDate').value = getTodayThaiDate();
 
-        // Initialize LIFF
+        // ✅ Trip type change handler
+        document.querySelectorAll('input[name="trip"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const returnInput = document.getElementById('returnDate');
+                const returnGroup = document.getElementById('returnGroup');
+                if (this.value === 'เที่ยวเดียว') {
+                    returnInput.disabled = true;
+                    returnInput.value = '';
+                    returnGroup.style.opacity = '0.5';
+                } else {
+                    returnInput.disabled = false;
+                    returnGroup.style.opacity = '1';
+                }
+            });
+        });
+
+        // ✅ LIFF Initialization
         window.onload = function() {
             if (typeof liff === 'undefined') {
                 console.warn('⚠️ LIFF SDK not loaded - running in demo mode');
                 return;
             }
             
-            liff.init({ liffId: LIFF_ID })
+            liff.init({ liffId: CONFIG.LIFF_ID })
                 .then(() => {
                     if (liff.isInClient()) {
                         liff.getProfile().then(profile => {
@@ -674,17 +755,21 @@
                             document.getElementById('userName').textContent = profile.displayName;
                             document.getElementById('userPicture').src = profile.pictureUrl;
                             console.log('✅ User loaded:', profile.displayName);
-                        }).catch(err => console.log('❌ Profile error:', err));
+                        }).catch(err => {
+                            console.error('❌ Profile error:', err);
+                        });
                     }
                 })
-                .catch(err => console.log('❌ LIFF error:', err));
+                .catch(err => {
+                    console.error('❌ LIFF error:', err);
+                });
         };
 
-        // ✅ แก้ไข: เพิ่ม loading state สำหรับ swap
-        function swapLocations() {
+        // ✅ Location Swap
+        document.getElementById('swapBtn').addEventListener('click', function() {
             const from = document.getElementById('from');
             const to = document.getElementById('to');
-            const swapBtn = document.getElementById('swapBtn');
+            const swapBtn = this;
             
             swapBtn.disabled = true;
             [from.value, to.value] = [to.value, from.value];
@@ -695,86 +780,47 @@
 
             clearError('fromGroup');
             clearError('toGroup');
-        }
+        });
 
-        // ✅ แก้ไข: เพิ่มการ validate ทารกและจำนวนรวม
+        // ✅ Passenger Counter - Fixed Event Delegation
+        document.querySelectorAll('.counter-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const type = this.dataset.type;
+                const action = this.dataset.action;
+                const delta = action === 'increase' ? 1 : -1;
+                
+                changeCount(type, delta);
+            });
+        });
+
         function changeCount(type, delta) {
             const newValue = counts[type] + delta;
             
+            // Prevent invalid values
             if (type === 'adult' && newValue < 1) return;
             if (newValue < 0 || newValue > 9) return;
             
-            // ทารกต้องไม่เกินผู้ใหญ่
+            // Infant validation
             if (type === 'infant' && newValue > counts.adult) {
-                alert('⚠️ จำนวนทารกต้องไม่เกินจำนวนผู้ใหญ่');
+                showMessage('error', '⚠️ จำนวนทารกต้องไม่เกินจำนวนผู้ใหญ่');
                 return;
             }
             
-            // ถ้าลดผู้ใหญ่ ต้องเช็คว่าทารกไม่เกิน
             if (type === 'adult' && newValue < counts.infant) {
-                alert('⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารกมากกว่า');
+                showMessage('error', '⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารกมากกว่า');
                 return;
             }
 
-            // ✅ เพิ่ม: ตรวจสอบจำนวนรวมไม่เกิน 9
+            // Total passengers validation
             const tempCounts = {...counts, [type]: newValue};
             const total = tempCounts.adult + tempCounts.child + tempCounts.infant;
             if (total > 9) {
-                alert('⚠️ จำนวนผู้โดยสารรวมต้องไม่เกิน 9 คน');
+                showMessage('error', '⚠️ จำนวนผู้โดยสารรวมต้องไม่เกิน 9 คน');
                 return;
             }
             
             counts[type] = newValue;
-            document.getElementById(`${type}-count`).textContent = newValue;
-        }
-
-        function generateRequestNumber() {
-            const timestamp = Date.now().toString().slice(-6);
-            return `REQ${timestamp}`;
-        }
-
-        // ✅ แก้ไข: validate เบอร์โทร
-        function validatePhone(phone) {
-            if (!phone) return true;
-            const cleanPhone = phone.replace(/[-\s]/g, '');
-            const phoneRegex = /^[0-9]{9,10}$/;
-            return phoneRegex.test(cleanPhone);
-        }
-
-        // ✅ แก้ไข: ปรับปรุง validation และ error handling
-        async function submitBooking() {
-            if (isSubmitting) {
-                console.log('⚠️ Already submitting...');
-                return;
-            }
-
-            // Clear all errors
-            ['fromGroup', 'toGroup', 'departGroup', 'returnGroup', 'phoneGroup'].forEach(clearError);
-
-            const from = document.getElementById('from').value.trim();
-            const to = document.getElementById('to').value.trim();
-            const departDate = document.getElementById('departDate').value.trim();
-            const returnDate = document.getElementById('returnDate').value.trim();
-            const flightClass = document.getElementById('class').value;
-            const tripType = document.querySelector('input[name="trip"]:checked').value;
-            const directFlight = document.getElementById('directFlight').checked;
-            const airline = document.getElementById('airline').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-
-            let hasError = false;
-
-            // Validation with visual feedback
-            if (!from) {
-                showError('fromGroup', 'กรุณากรอกต้นทาง');
-                hasError = true;
-            }
-            if (!to) {
-                showError('toGroup', 'กรุณากรอกปลายทาง');
-                hasError = true;
-            }
-            if (from && to && from.toLowerCase() === to.toLowerCase()) {
-                showError('toGroup', 'ต้นทางและปลายทางต้องไม่เหมือนกัน');
-                hasError = true;
-            }
-            if (!departDate || !validateThaiDate(departDate)) {
-                showError('departGroup', 'วันที่ไม่ถูกต้องหรืออยู่ในอ
+            document.getElementById(`${type}-count`).textContent = newValue
