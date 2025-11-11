@@ -27,6 +27,7 @@
         .input-group input, .input-group select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: all 0.3s; }
         .input-group input:focus, .input-group select:focus { outline: none; border-color: #2e7d32; }
         .input-group input:disabled { background: #f5f5f5; cursor: not-allowed; }
+        .input-group input[readonly] { cursor: pointer; }
         .input-group small { display: block; margin-top: 5px; color: #999; font-size: 12px; }
         .input-group .error { color: #d32f2f; font-size: 12px; margin-top: 5px; display: none; }
         .input-group.has-error input { border-color: #d32f2f; }
@@ -36,8 +37,6 @@
         .swap-btn svg { width: 24px; height: 24px; fill: #2e7d32; transition: fill 0.3s; }
         .swap-btn:hover svg { fill: white; }
         .date-inputs { display: flex; gap: 15px; }
-        .date-input-wrapper { position: relative; }
-        .date-input-wrapper input[type="text"] { cursor: pointer; }
         .passenger-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #e0e0e0; }
         .passenger-row:last-child { border-bottom: none; }
         .passenger-info h3 { font-size: 16px; margin-bottom: 5px; }
@@ -112,13 +111,15 @@
                 <div class="date-inputs">
                     <div class="input-group" id="departGroup">
                         <label>ขาไป</label>
-                        <input type="date" id="departDate">
+                        <input type="text" id="departDate" placeholder="วว/ดด/ปปปป" readonly style="background: white;">
+                        <input type="date" id="departDatePicker" style="display: none;">
                         <small>เลือกวันที่เดินทางขาไป</small>
                         <small class="error">วันที่ไม่ถูกต้อง</small>
                     </div>
                     <div class="input-group" id="returnGroup">
                         <label>ขากลับ</label>
-                        <input type="date" id="returnDate">
+                        <input type="text" id="returnDate" placeholder="วว/ดด/ปปปป" readonly style="background: white;">
+                        <input type="date" id="returnDatePicker" style="display: none;">
                         <small>เลือกวันที่เดินทางขากลับ</small>
                         <small class="error">วันที่ไม่ถูกต้อง</small>
                     </div>
@@ -221,21 +222,38 @@
             return /^0[0-9]{8,9}$/.test(phone.replace(/[-\s]/g, ''));
         }
         
-        // Setup date inputs
-        const departInput = document.getElementById('departDate');
-        const returnInput = document.getElementById('returnDate');
+        // Setup date inputs with Thai format display
+        const departDisplay = document.getElementById('departDate');
+        const returnDisplay = document.getElementById('returnDate');
+        const departPicker = document.getElementById('departDatePicker');
+        const returnPicker = document.getElementById('returnDatePicker');
         const today = getTodayDate();
         
-        departInput.min = today;
-        returnInput.min = today;
-        departInput.value = today;
+        departPicker.min = today;
+        returnPicker.min = today;
+        departPicker.value = today;
+        departDisplay.value = formatDateThai(today);
         
-        departInput.addEventListener('change', () => {
-            returnInput.min = departInput.value;
+        // Show date picker when clicking display input
+        departDisplay.addEventListener('click', () => {
+            departPicker.showPicker?.() || departPicker.click();
+        });
+        
+        returnDisplay.addEventListener('click', () => {
+            if (!returnPicker.disabled) {
+                returnPicker.showPicker?.() || returnPicker.click();
+            }
+        });
+        
+        // Update display when date changes
+        departPicker.addEventListener('change', () => {
+            departDisplay.value = formatDateThai(departPicker.value);
+            returnPicker.min = departPicker.value;
             clearError('departGroup');
         });
         
-        returnInput.addEventListener('change', () => {
+        returnPicker.addEventListener('change', () => {
+            returnDisplay.value = formatDateThai(returnPicker.value);
             clearError('returnGroup');
         });
         
@@ -243,12 +261,15 @@
         document.querySelectorAll('input[name="trip"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.value === 'เที่ยวเดียว') {
-                    returnInput.disabled = true;
-                    returnInput.value = '';
+                    returnPicker.disabled = true;
+                    returnDisplay.disabled = true;
+                    returnPicker.value = '';
+                    returnDisplay.value = '';
                     document.getElementById('returnGroup').style.opacity = '0.5';
                     clearError('returnGroup');
                 } else {
-                    returnInput.disabled = false;
+                    returnPicker.disabled = false;
+                    returnDisplay.disabled = false;
                     document.getElementById('returnGroup').style.opacity = '1';
                 }
             });
@@ -315,8 +336,8 @@
             const tripType = document.querySelector('input[name="trip"]:checked').value;
             const from = document.getElementById('from').value.trim();
             const to = document.getElementById('to').value.trim();
-            const departDateValue = departInput.value;
-            const returnDateValue = returnInput.value;
+            const departDateValue = departPicker.value;
+            const returnDateValue = returnPicker.value;
             const phone = document.getElementById('phone').value.trim();
             const airline = document.getElementById('airline').value.trim();
             const directFlight = document.getElementById('directFlight').checked;
@@ -400,18 +421,28 @@
                     body: JSON.stringify(data)
                 });
                 
-                showMessage('success', `✅ ส่งข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
-                
                 // Send to LINE Chat
                 if (typeof liff !== 'undefined' && liff.isInClient()) {
-                    const msg = `📋 คำขอจองตั๋ว #${reqNum}\n\n🛫 ${tripType}\n📍 ${from} → ${to}\n📅 ไป: ${departDate}${tripType === 'ไป-กลับ' ? `\n📅 กลับ: ${returnDate}` : ''}\n👥 ${adults} ผู้ใหญ่, ${children} เด็ก, ${infants} ทารก\n💺 ${seatClass}\n${airline ? `✈️ ${airline}\n` : ''}${directFlight ? '✅ บินตรง\n' : ''}${phone ? `📞 ${phone}\n` : ''}\nเจ้าหน้าที่จะติดต่อกลับเร็วๆนี้ค่ะ`;
+                    const passengerInfo = [
+                        adults > 0 ? `ผู้ใหญ่ ${adults} คน` : '',
+                        children > 0 ? `เด็ก ${children} คน` : '',
+                        infants > 0 ? `ทารก ${infants} คน` : ''
+                    ].filter(Boolean).join(', ');
                     
-                    liff.sendMessages([{
+                    const msg = `✅ ส่งคำขอจองตั๋วเรียบร้อยแล้ว\n━━━━━━━━━━━━━━━━\n📋 หมายเลข: ${reqNum}\n\n🛫 ประเภท: ${tripType}\n📍 ${from} → ${to}\n📅 วันไป: ${departDate}${tripType === 'ไป-กลับ' ? `\n📅 วันกลับ: ${returnDate}` : ''}\n\n👥 ผู้โดยสาร: ${passengerInfo}\n💺 ชั้นที่นั่ง: ${seatClass}${airline !== '-' ? `\n✈️ สายการบิน: ${airline}` : ''}${directFlight ? '\n✅ บินตรง' : ''}${phone !== '-' ? `\n📞 เบอร์ติดต่อ: ${phone}` : ''}\n━━━━━━━━━━━━━━━━\n💬 เจ้าหน้าที่จะติดต่อกลับไปเร็วๆ นี้ค่ะ`;
+                    
+                    await liff.sendMessages([{
                         type: 'text',
                         text: msg
-                    }]).then(() => {
-                        setTimeout(() => liff.closeWindow(), 1000);
-                    }).catch(console.error);
+                    }]);
+                    
+                    showMessage('success', `✅ ส่งข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
+                    
+                    setTimeout(() => {
+                        liff.closeWindow();
+                    }, 1500);
+                } else {
+                    showMessage('success', `✅ ส่งข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
                 }
             } catch (error) {
                 console.error('Error:', error);
