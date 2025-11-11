@@ -514,7 +514,25 @@
                             infants > 0 ? `ทารก ${infants} คน` : ''
                         ].filter(Boolean).join(', ');
                         
-                        const msg = `✅ ส่งคำขอจองตั๋วเรียบร้อยแล้ว\n━━━━━━━━━━━━━━━━\n📋 หมายเลข: ${reqNum}\n\n🛫 ประเภท: ${tripType}\n📍 ${from} → ${to}\n📅 วันไป: ${departDate}${tripType === 'ไป-กลับ' ? `\n📅 วันกลับ: ${returnDate}` : ''}\n\n👥 ผู้โดยสาร: ${passengerInfo}\n💺 ชั้น: ${seatClass}\n✈️ สายการบิน: ${airline || 'ไม่ระบุ'}\n${directFlight ? '✈️ บินตรง' : ''}${phone !== '-' ? `\n📞 เบอร์: ${phone}` : ''}\n\n💬 เจ้าหน้าที่จะติดต่อกลับเร็วๆ นี้ค่ะ`;
+                        let msg = `✅ รับคำขอเช็คราคาตั๋วเรียบร้อยแล้วค่ะ\n━━━━━━━━━━━━━━━━\n📋 หมายเลขคำขอ: ${reqNum}\n\n🛫 ${tripType}: ${from} → ${to}\n📅 ${tripType === 'ไป-กลับ' ? `เดินทาง: ${departDate} - ${returnDate}` : `เดินทางวันที่: ${departDate}`}\n\n👥 ผู้โดยสาร: ${passengerInfo}\n💺 ชั้นโดยสาร: ${seatClass}`;
+                        
+                        if (airline && airline !== '-') {
+                            msg += `\n✈️ สายการบิน: ${airline}`;
+                        }
+                        
+                        if (directFlight) {
+                            msg += `\n✅ บินตรง`;
+                        }
+                        
+                        if (phone && phone !== '-') {
+                            msg += `\n📞 เบอร์: ${phone}`;
+                        }
+                        
+                        if (specialRequest && specialRequest !== '-') {
+                            msg += `\n\n📝 ความต้องการพิเศษ:\n${specialRequest}`;
+                        }
+                        
+                        msg += `\n\n💬 เจ้าหน้าที่จะติดต่อกลับแจ้งรายละเอียดให้ทราบโดยเร็วที่สุดค่ะ`;
                         
                         await liff.sendMessages([{
                             type: 'text',
