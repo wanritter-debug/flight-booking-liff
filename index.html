@@ -22,12 +22,12 @@
         .section { background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
         .section-title { font-size: 14px; color: #2e7d32; margin-bottom: 15px; font-weight: 600; }
         .location-inputs { display: flex; gap: 15px; align-items: center; }
-        .input-group { flex: 1; position: relative; }
+        .input-group { flex: 1; }
         .input-group label { display: block; margin-bottom: 8px; color: #666; font-size: 14px; }
         .input-group input, .input-group select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: all 0.3s; }
         .input-group input:focus, .input-group select:focus { outline: none; border-color: #2e7d32; }
         .input-group input:disabled { background: #f5f5f5; cursor: not-allowed; }
-        .input-group input[readonly] { cursor: pointer; background: white !important; }
+        .input-group input[readonly] { cursor: pointer; }
         .input-group small { display: block; margin-top: 5px; color: #999; font-size: 12px; }
         .input-group .error { color: #d32f2f; font-size: 12px; margin-top: 5px; display: none; }
         .input-group.has-error input { border-color: #d32f2f; }
@@ -54,7 +54,6 @@
         .success-message, .error-message { display: none; color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
         .success-message { background: #4caf50; }
         .error-message { background: #f44336; }
-        .debug-info { background: #fff3cd; border: 1px solid #ffc107; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; display: none; }
         @media (max-width: 600px) { .location-inputs { flex-direction: column; } .swap-btn { margin-top: 0; transform: rotate(90deg); } .swap-btn:hover { transform: rotate(270deg); } .date-inputs { flex-direction: column; } }
     </style>
 </head>
@@ -69,7 +68,6 @@
             </div>
         </div>
         <div class="form-container">
-            <div class="debug-info" id="debugInfo"></div>
             <div class="success-message" id="successMessage"></div>
             <div class="error-message" id="errorMessage"></div>
             <div class="trip-type">
@@ -113,15 +111,15 @@
                 <div class="date-inputs">
                     <div class="input-group" id="departGroup">
                         <label>ขาไป</label>
-                        <input type="text" id="departDate" placeholder="เลือกวันที่..." readonly style="background: white; cursor: pointer;">
-                        <input type="date" id="departDatePicker" style="position: absolute; opacity: 0; pointer-events: none;">
+                        <input type="date" id="departDatePicker">
+                        <input type="text" id="departDate" placeholder="วว/ดด/ปปปป" readonly style="display: none;">
                         <small>เลือกวันที่เดินทางขาไป</small>
                         <small class="error">วันที่ไม่ถูกต้อง</small>
                     </div>
                     <div class="input-group" id="returnGroup">
                         <label>ขากลับ</label>
-                        <input type="text" id="returnDate" placeholder="เลือกวันที่..." readonly style="background: white; cursor: pointer;">
-                        <input type="date" id="returnDatePicker" style="position: absolute; opacity: 0; pointer-events: none;">
+                        <input type="date" id="returnDatePicker">
+                        <input type="text" id="returnDate" placeholder="วว/ดด/ปปปป" readonly style="display: none;">
                         <small>เลือกวันที่เดินทางขากลับ</small>
                         <small class="error">วันที่ไม่ถูกต้อง</small>
                     </div>
@@ -182,13 +180,6 @@
         let userProfile = null;
         let isLiffReady = false;
         
-        function showDebug(message) {
-            const debugEl = document.getElementById('debugInfo');
-            debugEl.textContent = message;
-            debugEl.style.display = 'block';
-            console.log('DEBUG:', message);
-        }
-        
         function showMessage(type, message) {
             const el = document.getElementById(type === 'success' ? 'successMessage' : 'errorMessage');
             el.textContent = message;
@@ -232,7 +223,7 @@
             return /^0[0-9]{8,9}$/.test(phone.replace(/[-\s]/g, ''));
         }
         
-        // Setup date inputs with Thai format display
+        // Setup date inputs
         const departDisplay = document.getElementById('departDate');
         const returnDisplay = document.getElementById('returnDate');
         const departPicker = document.getElementById('departDatePicker');
@@ -241,35 +232,37 @@
         
         departPicker.min = today;
         returnPicker.min = today;
-        
-        // Set initial depart date to today
         departPicker.value = today;
         departDisplay.value = formatDateThai(today);
         
-        // Show date picker when clicking display input
         departDisplay.addEventListener('click', (e) => {
             e.preventDefault();
-            if (departPicker.showPicker) {
-                departPicker.showPicker();
-            } else {
-                departPicker.focus();
-                departPicker.click();
+            departPicker.focus();
+            departPicker.click();
+            try {
+                if (departPicker.showPicker) {
+                    departPicker.showPicker();
+                }
+            } catch (err) {
+                // Some browsers don't support showPicker
             }
         });
         
         returnDisplay.addEventListener('click', (e) => {
             e.preventDefault();
             if (!returnPicker.disabled) {
-                if (returnPicker.showPicker) {
-                    returnPicker.showPicker();
-                } else {
-                    returnPicker.focus();
-                    returnPicker.click();
+                returnPicker.focus();
+                returnPicker.click();
+                try {
+                    if (returnPicker.showPicker) {
+                        returnPicker.showPicker();
+                    }
+                } catch (err) {
+                    // Some browsers don't support showPicker
                 }
             }
         });
         
-        // Update display when date changes
         departPicker.addEventListener('change', () => {
             departDisplay.value = formatDateThai(departPicker.value);
             returnPicker.min = departPicker.value;
@@ -300,64 +293,39 @@
         });
         
         // Initialize LIFF
-        window.addEventListener('load', async () => {
-            // Wait for LIFF SDK to load
-            let retries = 0;
-            const maxRetries = 10;
-            
-            const waitForLiff = () => {
-                return new Promise((resolve, reject) => {
-                    const checkLiff = setInterval(() => {
-                        retries++;
-                        if (typeof liff !== 'undefined') {
-                            clearInterval(checkLiff);
-                            resolve(true);
-                        } else if (retries >= maxRetries) {
-                            clearInterval(checkLiff);
-                            reject(new Error('LIFF SDK failed to load'));
-                        }
-                    }, 300);
-                });
-            };
-            
+        window.onload = async () => {
             try {
-                showDebug('รอ LIFF SDK โหลด...');
-                await waitForLiff();
-                showDebug('✅ LIFF SDK โหลดสำเร็จ');
-            } catch (error) {
-                showDebug('❌ LIFF SDK ไม่พร้อมใช้งาน - กรุณาเปิดไฟล์บน HTTPS Server');
-                showMessage('error', '⚠️ กรุณาอัปโหลดไฟล์ขึ้น Web Server (ต้องใช้ HTTPS)');
-                return;
-            }
-            
-            try {
-                showDebug('กำลังเริ่มต้น LIFF...');
+                console.log('Starting LIFF init...');
+                
+                if (typeof liff === 'undefined') {
+                    console.error('LIFF SDK not loaded');
+                    return;
+                }
                 
                 await liff.init({ liffId: CONFIG.LIFF_ID });
-                showDebug('✅ LIFF เริ่มต้นสำเร็จ');
+                console.log('LIFF initialized successfully');
                 
                 if (!liff.isInClient()) {
-                    showDebug('⚠️ กรุณาเปิดในแอพ LINE');
-                    showMessage('error', '⚠️ กรุณาเปิดในแอพ LINE เพื่อใช้งาน');
+                    console.warn('Not in LINE app');
+                    showMessage('error', '⚠️ กรุณาเปิดในแอพ LINE');
                     return;
                 }
                 
                 isLiffReady = true;
-                showDebug('✅ เปิดใน LINE App แล้ว');
+                console.log('LIFF is ready in LINE client');
                 
                 const profile = await liff.getProfile();
                 userProfile = profile;
                 document.getElementById('userInfo').style.display = 'flex';
                 document.getElementById('userName').textContent = profile.displayName;
                 document.getElementById('userPicture').src = profile.pictureUrl;
-                showDebug(`✅ โหลดโปรไฟล์: ${profile.displayName}`);
+                console.log('User profile loaded:', profile.displayName);
                 
             } catch (error) {
-                console.error('LIFF Error:', error);
-                showDebug(`❌ LIFF Error: ${error.message}`);
+                console.error('LIFF initialization error:', error);
                 showMessage('error', '❌ เกิดข้อผิดพลาดในการเชื่อมต่อ LINE');
             }
-        });
+        };
         
         // Swap button
         document.getElementById('swapBtn').addEventListener('click', () => {
@@ -368,7 +336,7 @@
             clearError('toGroup');
         });
         
-        // Passenger input validation
+        // Passenger validation
         document.querySelectorAll('.counter-input').forEach(input => {
             input.addEventListener('input', function() {
                 const type = this.id.replace('-count', '');
@@ -396,7 +364,6 @@
         
         // Submit form
         document.getElementById('submitBtn').addEventListener('click', async () => {
-            // Clear previous errors
             ['fromGroup', 'toGroup', 'departGroup', 'returnGroup', 'phoneGroup'].forEach(clearError);
             
             const tripType = document.querySelector('input[name="trip"]:checked').value;
@@ -450,7 +417,6 @@
                 return;
             }
             
-            // Convert to Thai format for display
             const departDate = formatDateThai(departDateValue);
             const returnDate = returnDateValue ? formatDateThai(returnDateValue) : '-';
             
@@ -477,25 +443,21 @@
             showLoading(true);
             
             try {
-                // Send to Google Sheets
-                showDebug('กำลังส่งข้อมูลไป Google Sheets...');
+                console.log('Sending to Google Sheets...');
                 await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
-                showDebug('✅ ส่งข้อมูลไป Google Sheets สำเร็จ');
+                console.log('Sent to Google Sheets successfully');
                 
-                // Send to LINE Chat
                 if (!isLiffReady) {
-                    showDebug('⚠️ LIFF ไม่พร้อม - ข้ามการส่งข้อความ LINE');
+                    console.warn('LIFF not ready, skipping LINE message');
                     showMessage('success', `✅ บันทึกข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
                 } else {
                     try {
-                        showDebug('กำลังส่งข้อความไปยัง LINE Chat...');
+                        console.log('Sending message to LINE...');
                         
                         const passengerInfo = [
                             adults > 0 ? `ผู้ใหญ่ ${adults} คน` : '',
@@ -503,31 +465,26 @@
                             infants > 0 ? `ทารก ${infants} คน` : ''
                         ].filter(Boolean).join(', ');
                         
-                        const msg = `✅ ส่งคำขอจองตั๋วเรียบร้อยแล้ว\n━━━━━━━━━━━━━━━━\n📋 หมายเลข: ${reqNum}\n\n🛫 ประเภท: ${tripType}\n📍 ${from} → ${to}\n📅 วันไป: ${departDate}${tripType === 'ไป-กลับ' ? `\n📅 วันกลับ: ${returnDate}` : ''}\n\n👥 ผู้โดยสาร: ${passengerInfo}\n💺 ชั้น: ${seatClass}\n✈️ สายการบิน: ${airline || 'ไม่ระบุ'}\n${directFlight ? '✈️ บินตรง' : ''}${phone !== '-' ? `\n📞 เบอร์: ${phone}` : ''}\n\n💬 เจ้าหน้าที่จะติดต่อกลับเร็วๆ นี้ค่ะ`;
+                        const msg = `✅ ส่งคำขอจองตั๋วเรียบร้อยแล้ว\n━━━━━━━━━━━━━━━━\n📋 หมายเลข: ${reqNum}\n\n🛫 ประเภท: ${tripType}\n📍 ${from} → ${to}\n📅 วันไป: ${departDate}${tripType === 'ไป-กลับ' ? `\n📅 วันกลับ: ${returnDate}` : ''}\n\n👥 ผู้โดยสาร: ${passengerInfo}\n💺 ชั้นที่นั่ง: ${seatClass}${airline !== '-' ? `\n✈️ สายการบิน: ${airline}` : ''}${directFlight ? '\n✅ บินตรง' : ''}${phone !== '-' ? `\n📞 เบอร์ติดต่อ: ${phone}` : ''}\n━━━━━━━━━━━━━━━━\n💬 เจ้าหน้าที่จะติดต่อกลับไปเร็วๆ นี้ค่ะ`;
                         
-                        await liff.sendMessages([{
-                            type: 'text',
-                            text: msg
-                        }]);
+                        await liff.sendMessages([{ type: 'text', text: msg }]);
+                        console.log('LINE message sent successfully');
                         
-                        showDebug('✅ ส่งข้อความ LINE สำเร็จ');
-                        showMessage('success', `✅ ส่งคำขอสำเร็จ! หมายเลข: ${reqNum}`);
+                        showMessage('success', `✅ ส่งข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
                         
                         setTimeout(() => {
+                            console.log('Closing LIFF window...');
                             liff.closeWindow();
-                        }, 2000);
+                        }, 1500);
                         
                     } catch (lineError) {
-                        console.error('LINE Error:', lineError);
-                        showDebug(`⚠️ LINE Error: ${lineError.message}`);
+                        console.error('LINE message error:', lineError);
                         showMessage('success', `✅ บันทึกข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
                     }
                 }
-                
             } catch (error) {
-                console.error('Submit Error:', error);
-                showDebug(`❌ Error: ${error.message}`);
-                showMessage('error', '❌ เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+                console.error('Submit error:', error);
+                showMessage('error', '❌ เกิดข้อผิดพลาด กรุณาลองใหม่');
             } finally {
                 showLoading(false);
             }
