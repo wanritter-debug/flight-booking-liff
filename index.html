@@ -19,13 +19,13 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
         }
         .header {
             background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
             color: white;
             padding: 30px 20px;
             text-align: center;
+            border-radius: 20px 20px 0 0;
         }
         .header h1 { font-size: 28px; margin-bottom: 5px; }
         .header p { font-size: 14px; opacity: 0.95; }
@@ -38,43 +38,18 @@
             background: rgba(255,255,255,0.2);
             border-radius: 10px;
         }
-        .user-info img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid white;
-        }
-        .user-info .name { font-size: 14px; opacity: 0.9; }
+        .user-info img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; }
+        .user-info .name { font-size: 14px; }
         .form-container { padding: 30px 20px; }
-        .trip-type { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+        .trip-type { display: flex; gap: 20px; margin-bottom: 30px; }
         .radio-group { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-        .radio-group input[type="radio"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            accent-color: #2e7d32;
-        }
+        .radio-group input[type="radio"] { width: 20px; height: 20px; cursor: pointer; accent-color: #2e7d32; }
         .radio-group label { cursor: pointer; font-size: 16px; color: #333; }
-        .section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .section-title {
-            font-size: 14px;
-            color: #2e7d32;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
+        .section { background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+        .section-title { font-size: 14px; color: #2e7d32; margin-bottom: 15px; font-weight: 600; }
         .location-inputs { display: flex; gap: 15px; align-items: center; }
         .input-group { flex: 1; }
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #666;
-            font-size: 14px;
-        }
+        .input-group label { display: block; margin-bottom: 8px; color: #666; font-size: 14px; }
         .input-group input, .input-group select {
             width: 100%;
             padding: 12px 15px;
@@ -83,18 +58,10 @@
             font-size: 16px;
             transition: all 0.3s;
         }
-        .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: #2e7d32;
-        }
+        .input-group input:focus, .input-group select:focus { outline: none; border-color: #2e7d32; }
         .input-group input:disabled { background: #f5f5f5; cursor: not-allowed; }
         .input-group small { display: block; margin-top: 5px; color: #999; font-size: 12px; }
-        .input-group .error {
-            color: #d32f2f;
-            font-size: 12px;
-            margin-top: 5px;
-            display: none;
-        }
+        .input-group .error { color: #d32f2f; font-size: 12px; margin-top: 5px; display: none; }
         .input-group.has-error input { border-color: #d32f2f; }
         .input-group.has-error .error { display: block; }
         .swap-btn {
@@ -112,7 +79,6 @@
             flex-shrink: 0;
         }
         .swap-btn:hover { background: #2e7d32; transform: rotate(180deg); }
-        .swap-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .swap-btn svg { width: 24px; height: 24px; fill: #2e7d32; transition: fill 0.3s; }
         .swap-btn:hover svg { fill: white; }
         .date-inputs { display: flex; gap: 15px; }
@@ -124,7 +90,7 @@
             border-bottom: 1px solid #e0e0e0;
         }
         .passenger-row:last-child { border-bottom: none; }
-        .passenger-info h3 { font-size: 16px; margin-bottom: 5px; color: #333; }
+        .passenger-info h3 { font-size: 16px; margin-bottom: 5px; }
         .passenger-info p { font-size: 12px; color: #999; }
         .counter { display: flex; align-items: center; gap: 15px; }
         .counter-btn {
@@ -143,13 +109,7 @@
         }
         .counter-btn:hover:not(:disabled) { background: #2e7d32; color: white; }
         .counter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .counter-value {
-            font-size: 18px;
-            font-weight: bold;
-            min-width: 30px;
-            text-align: center;
-            color: #333;
-        }
+        .counter-value { font-size: 18px; font-weight: bold; min-width: 30px; text-align: center; }
         .submit-btn {
             width: 100%;
             padding: 18px;
@@ -163,19 +123,13 @@
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
         }
-        .submit-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.6);
-        }
-        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46, 125, 50, 0.6); }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .footer-note { text-align: center; color: #999; font-size: 13px; margin-top: 15px; }
         .loading-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.7);
             z-index: 9999;
             align-items: center;
@@ -184,18 +138,14 @@
         .loading-overlay.active { display: flex; }
         .loading-content { background: white; padding: 30px; border-radius: 15px; text-align: center; }
         .spinner {
-            width: 50px;
-            height: 50px;
+            width: 50px; height: 50px;
             border: 5px solid #f3f3f3;
             border-top: 5px solid #2e7d32;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .success-message, .error-message {
             display: none;
             color: white;
@@ -241,12 +191,10 @@
             </div>
 
             <div class="section">
-                <div class="input-group">
-                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                        <input type="checkbox" id="directFlight" style="width: 20px; height: 20px; cursor: pointer; accent-color: #2e7d32;">
-                        <span style="font-size: 16px; color: #333;">✈️ บินตรง (ไม่แวะจอด)</span>
-                    </label>
-                </div>
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" id="directFlight" style="width: 20px; height: 20px; cursor: pointer; accent-color: #2e7d32;">
+                    <span style="font-size: 16px;">✈️ บินตรง (ไม่แวะจอด)</span>
+                </label>
             </div>
 
             <div class="section">
@@ -263,17 +211,17 @@
                 <div class="location-inputs">
                     <div class="input-group" id="fromGroup">
                         <label>ต้นทาง</label>
-                        <input type="text" id="from" placeholder="เช่น กรุงเทพฯ, เชียงใหม่, ภูเก็ต">
+                        <input type="text" id="from" placeholder="กรุงเทพฯ, เชียงใหม่, ภูเก็ต">
                         <small class="error">กรุณากรอกต้นทาง</small>
                     </div>
-                    <button class="swap-btn" onclick="swapLocations()" id="swapBtn" type="button">
+                    <button class="swap-btn" type="button" id="swapBtn">
                         <svg viewBox="0 0 24 24">
                             <path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/>
                         </svg>
                     </button>
                     <div class="input-group" id="toGroup">
                         <label>ปลายทาง</label>
-                        <input type="text" id="to" placeholder="เช่น สิงคโปร์, ฮ่องกง, โตเกียว">
+                        <input type="text" id="to" placeholder="สิงคโปร์, ฮ่องกง, โตเกียว">
                         <small class="error">กรุณากรอกปลายทาง</small>
                     </div>
                 </div>
@@ -305,9 +253,9 @@
                         <p>อายุ 12 ปีขึ้นไป</p>
                     </div>
                     <div class="counter">
-                        <button class="counter-btn" onclick="changeCount('adult', -1)" type="button">−</button>
+                        <button class="counter-btn" type="button" data-type="adult" data-delta="-1">−</button>
                         <span class="counter-value" id="adult-count">1</span>
-                        <button class="counter-btn" onclick="changeCount('adult', 1)" type="button">+</button>
+                        <button class="counter-btn" type="button" data-type="adult" data-delta="1">+</button>
                     </div>
                 </div>
                 <div class="passenger-row">
@@ -316,9 +264,9 @@
                         <p>อายุ 2-11 ปี</p>
                     </div>
                     <div class="counter">
-                        <button class="counter-btn" onclick="changeCount('child', -1)" type="button">−</button>
+                        <button class="counter-btn" type="button" data-type="child" data-delta="-1">−</button>
                         <span class="counter-value" id="child-count">0</span>
-                        <button class="counter-btn" onclick="changeCount('child', 1)" type="button">+</button>
+                        <button class="counter-btn" type="button" data-type="child" data-delta="1">+</button>
                     </div>
                 </div>
                 <div class="passenger-row">
@@ -327,9 +275,9 @@
                         <p>อายุต่ำกว่า 2 ปี</p>
                     </div>
                     <div class="counter">
-                        <button class="counter-btn" onclick="changeCount('infant', -1)" type="button">−</button>
+                        <button class="counter-btn" type="button" data-type="infant" data-delta="-1">−</button>
                         <span class="counter-value" id="infant-count">0</span>
-                        <button class="counter-btn" onclick="changeCount('infant', 1)" type="button">+</button>
+                        <button class="counter-btn" type="button" data-type="infant" data-delta="1">+</button>
                     </div>
                 </div>
             </div>
@@ -356,7 +304,7 @@
                 </div>
             </div>
 
-            <button class="submit-btn" id="submitBtn" onclick="submitBooking()" type="button">เช็คราคา</button>
+            <button class="submit-btn" type="button" id="submitBtn">เช็คราคา</button>
             <p class="footer-note">💬 เจ้าหน้าที่จะตอบกลับโดยเร็วที่สุดครับ/ค่ะ</p>
         </div>
     </div>
@@ -372,83 +320,31 @@
     <script>
         const CONFIG = {
             GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
-            LIFF_ID: '2008429094-y2WmXkYQ',
-            MAX_RETRIES: 3,
-            TIMEOUT: 15000
+            LIFF_ID: '2008429094-y2WmXkYQ'
         };
         
         let counts = { adult: 1, child: 0, infant: 0 };
         let userProfile = null;
-        let isSubmitting = false;
 
-        function formatDateInput(input) {
-            let value = input.value.replace(/\D/g, '');
-            if (value.length >= 2) value = value.slice(0, 2) + '/' + value.slice(2);
-            if (value.length >= 5) value = value.slice(0, 5) + '/' + value.slice(5, 9);
-            input.value = value;
+        // Utility functions
+        function showMessage(type, msg) {
+            const el = document.getElementById(type === 'success' ? 'successMessage' : 'errorMessage');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 5000);
         }
 
-        function getTodayThaiDate() {
-            const today = new Date();
-            const day = String(today.getDate()).padStart(2, '0');
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const year = today.getFullYear() + 543;
-            return `${day}/${month}/${year}`;
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').classList.toggle('active', show);
+            document.getElementById('submitBtn').disabled = show;
         }
 
-        function isValidDate(day, month, year) {
-            if (day < 1 || day > 31 || month < 1 || month > 12 || year < 2500) return false;
-            const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-            const gregorianYear = year - 543;
-            const isLeap = (gregorianYear % 4 === 0 && gregorianYear % 100 !== 0) || (gregorianYear % 400 === 0);
-            if (month === 2 && isLeap) daysInMonth[1] = 29;
-            return day <= daysInMonth[month - 1];
-        }
-
-        function validateThaiDate(dateStr, allowPast = false) {
-            if (!dateStr) return false;
-            const parts = dateStr.split('/');
-            if (parts.length !== 3) return false;
-            const day = parseInt(parts[0]);
-            const month = parseInt(parts[1]);
-            const year = parseInt(parts[2]);
-            if (!isValidDate(day, month, year)) return false;
-            if (!allowPast) {
-                const inputDate = new Date(thaiDateToISO(dateStr));
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                if (inputDate < today) return false;
-            }
-            return true;
-        }
-
-        function thaiDateToISO(thaiDateStr) {
-            if (!thaiDateStr) return '';
-            const parts = thaiDateStr.split('/');
-            const day = parts[0].padStart(2, '0');
-            const month = parts[1].padStart(2, '0');
-            const year = parseInt(parts[2]) - 543;
-            return `${year}-${month}-${day}`;
-        }
-
-        function compareDates(date1, date2) {
-            const iso1 = thaiDateToISO(date1);
-            const iso2 = thaiDateToISO(date2);
-            return iso1 < iso2 ? -1 : iso1 > iso2 ? 1 : 0;
-        }
-
-        function validatePhone(phone) {
-            if (!phone) return true;
-            const cleanPhone = phone.replace(/[-\s]/g, '');
-            return /^0[0-9]{8,9}$/.test(cleanPhone);
-        }
-
-        function showError(groupId, message) {
+        function showError(groupId, msg) {
             const group = document.getElementById(groupId);
             if (group) {
                 group.classList.add('has-error');
-                const errorEl = group.querySelector('.error');
-                if (errorEl && message) errorEl.textContent = message;
+                const err = group.querySelector('.error');
+                if (err && msg) err.textContent = msg;
             }
         }
 
@@ -457,123 +353,143 @@
             if (group) group.classList.remove('has-error');
         }
 
-        function showMessage(type, message) {
-            const messageEl = document.getElementById(type === 'success' ? 'successMessage' : 'errorMessage');
-            messageEl.textContent = message;
-            messageEl.style.display = 'block';
-            setTimeout(() => { messageEl.style.display = 'none'; }, 5000);
+        function getTodayThaiDate() {
+            const d = new Date();
+            return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()+543}`;
         }
 
-        function showLoading(show) {
-            const overlay = document.getElementById('loadingOverlay');
-            const submitBtn = document.getElementById('submitBtn');
-            if (show) {
-                overlay.classList.add('active');
-                submitBtn.disabled = true;
-            } else {
-                overlay.classList.remove('active');
-                submitBtn.disabled = false;
-            }
+        function formatDateInput(input) {
+            let v = input.value.replace(/\D/g, '');
+            if (v.length >= 2) v = v.slice(0,2) + '/' + v.slice(2);
+            if (v.length >= 5) v = v.slice(0,5) + '/' + v.slice(5,9);
+            input.value = v;
         }
 
-        function generateRequestNumber() {
-            const timestamp = Date.now().toString().slice(-6);
-            const random = Math.random().toString(36).substring(2, 5).toUpperCase();
-            return `REQ${timestamp}${random}`;
+        function isValidDate(d, m, y) {
+            if (d<1||d>31||m<1||m>12||y<2500) return false;
+            const days = [31,28,31,30,31,30,31,31,30,31,30,31];
+            const gy = y-543;
+            if ((gy%4===0&&gy%100!==0)||gy%400===0) days[1]=29;
+            return d <= days[m-1];
         }
 
-        function setupDateInput(inputId) {
-            const input = document.getElementById(inputId);
-            input.addEventListener('keypress', function(e) {
-                if (!/[0-9/]/.test(e.key)) e.preventDefault();
+        function validateThaiDate(str) {
+            if (!str) return false;
+            const p = str.split('/');
+            if (p.length !== 3) return false;
+            const d=parseInt(p[0]), m=parseInt(p[1]), y=parseInt(p[2]);
+            if (!isValidDate(d,m,y)) return false;
+            const inputDate = new Date(y-543, m-1, d);
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            return inputDate >= today;
+        }
+
+        function thaiDateToISO(str) {
+            if (!str) return '';
+            const p = str.split('/');
+            return `${parseInt(p[2])-543}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+        }
+
+        function compareDates(d1, d2) {
+            const iso1 = thaiDateToISO(d1);
+            const iso2 = thaiDateToISO(d2);
+            return iso1 < iso2 ? -1 : iso1 > iso2 ? 1 : 0;
+        }
+
+        function validatePhone(p) {
+            if (!p) return true;
+            return /^0[0-9]{8,9}$/.test(p.replace(/[-\s]/g, ''));
+        }
+
+        // Date inputs setup
+        ['departDate', 'returnDate'].forEach(id => {
+            const input = document.getElementById(id);
+            input.addEventListener('input', () => {
+                formatDateInput(input);
+                clearError(id + 'Group');
             });
-            input.addEventListener('input', function() {
-                formatDateInput(this);
-                clearError(inputId + 'Group');
-            });
-            input.addEventListener('blur', function() {
-                if (this.value && !validateThaiDate(this.value)) {
-                    showError(inputId + 'Group', 'วันที่ไม่ถูกต้องหรืออยู่ในอดีต');
+            input.addEventListener('blur', () => {
+                if (input.value && !validateThaiDate(input.value)) {
+                    showError(id + 'Group', 'วันที่ไม่ถูกต้อง');
                 }
             });
-        }
-
-        setupDateInput('departDate');
-        setupDateInput('returnDate');
+        });
         document.getElementById('departDate').value = getTodayThaiDate();
 
-        document.querySelectorAll('input[name="trip"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const returnInput = document.getElementById('returnDate');
-                const returnGroup = document.getElementById('returnGroup');
+        // Trip type
+        document.querySelectorAll('input[name="trip"]').forEach(r => {
+            r.addEventListener('change', function() {
+                const ret = document.getElementById('returnDate');
+                const retG = document.getElementById('returnGroup');
                 if (this.value === 'เที่ยวเดียว') {
-                    returnInput.disabled = true;
-                    returnInput.value = '';
-                    returnGroup.style.opacity = '0.5';
+                    ret.disabled = true;
+                    ret.value = '';
+                    retG.style.opacity = '0.5';
                 } else {
-                    returnInput.disabled = false;
-                    returnGroup.style.opacity = '1';
+                    ret.disabled = false;
+                    retG.style.opacity = '1';
                 }
             });
         });
 
-        window.onload = function() {
-            if (typeof liff === 'undefined') {
-                console.warn('⚠️ LIFF SDK not loaded');
-                return;
+        // LIFF
+        window.onload = () => {
+            if (typeof liff !== 'undefined') {
+                liff.init({ liffId: CONFIG.LIFF_ID })
+                    .then(() => {
+                        if (liff.isInClient()) {
+                            liff.getProfile().then(p => {
+                                userProfile = p;
+                                document.getElementById('userInfo').style.display = 'flex';
+                                document.getElementById('userName').textContent = p.displayName;
+                                document.getElementById('userPicture').src = p.pictureUrl;
+                            }).catch(console.error);
+                        }
+                    }).catch(console.error);
             }
-            liff.init({ liffId: CONFIG.LIFF_ID })
-                .then(() => {
-                    if (liff.isInClient()) {
-                        liff.getProfile().then(profile => {
-                            userProfile = profile;
-                            document.getElementById('userInfo').style.display = 'flex';
-                            document.getElementById('userName').textContent = profile.displayName;
-                            document.getElementById('userPicture').src = profile.pictureUrl;
-                        }).catch(err => console.error('Profile error:', err));
-                    }
-                })
-                .catch(err => console.error('LIFF error:', err));
         };
 
-        function swapLocations() {
+        // Swap locations
+        document.getElementById('swapBtn').addEventListener('click', () => {
             const from = document.getElementById('from');
             const to = document.getElementById('to');
-            const swapBtn = document.getElementById('swapBtn');
-            swapBtn.disabled = true;
             [from.value, to.value] = [to.value, from.value];
-            setTimeout(() => { swapBtn.disabled = false; }, 300);
             clearError('fromGroup');
             clearError('toGroup');
-        }
+        });
 
-        function changeCount(type, delta) {
-            const newValue = counts[type] + delta;
-            if (type === 'adult' && newValue < 1) return;
-            if (newValue < 0 || newValue > 9) return;
-            if (type === 'infant' && newValue > counts.adult) {
-                showMessage('error', '⚠️ จำนวนทารกต้องไม่เกินจำนวนผู้ใหญ่');
-                return;
-            }
-            if (type === 'adult' && newValue < counts.infant) {
-                showMessage('error', '⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารกมากกว่า');
-                return;
-            }
-            const tempCounts = {...counts, [type]: newValue};
-            const total = tempCounts.adult + tempCounts.child + tempCounts.infant;
-            if (total > 9) {
-                showMessage('error', '⚠️ จำนวนผู้โดยสารรวมต้องไม่เกิน 9 คน');
-                return;
-            }
-            counts[type] = newValue;
-            document.getElementById(`${type}-count`).textContent = newValue;
-        }
+        // Passenger counters
+        document.querySelectorAll('.counter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const type = this.getAttribute('data-type');
+                const delta = parseInt(this.getAttribute('data-delta'));
+                const newVal = counts[type] + delta;
+                
+                if (type === 'adult' && newVal < 1) return;
+                if (newVal < 0 || newVal > 9) return;
+                if (type === 'infant' && newVal > counts.adult) {
+                    showMessage('error', '⚠️ จำนวนทารกต้องไม่เกินจำนวนผู้ใหญ่');
+                    return;
+                }
+                if (type === 'adult' && newVal < counts.infant) {
+                    showMessage('error', '⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารกมากกว่า');
+                    return;
+                }
+                const temp = {...counts, [type]: newVal};
+                const total = temp.adult + temp.child + temp.infant;
+                if (total > 9) {
+                    showMessage('error', '⚠️ จำนวนผู้โดยสารรวมต้องไม่เกิน 9 คน');
+                    return;
+                }
+                counts[type] = newVal;
+                document.getElementById(`${type}-count`).textContent = newVal;
+            });
+        });
 
-        async function submitBooking() {
-            if (isSubmitting) return;
-            
-            // Clear errors
-            ['fromGroup', 'toGroup', 'departGroup', 'returnGroup', 'phoneGroup'].forEach(clearError);
+        // Submit
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            ['fromGroup','toGroup','departGroup','returnGroup','phoneGroup'].forEach(clearError);
             
             const tripType = document.querySelector('input[name="trip"]:checked').value;
             const from = document.getElementById('from').value.trim();
@@ -586,7 +502,6 @@
             const seatClass = document.getElementById('class').value;
             
             let hasError = false;
-            
             if (!from) { showError('fromGroup', 'กรุณากรอกต้นทาง'); hasError = true; }
             if (!to) { showError('toGroup', 'กรุณากรอกปลายทาง'); hasError = true; }
             if (!departDate || !validateThaiDate(departDate)) {
@@ -608,12 +523,10 @@
                 return;
             }
             
-            const requestNumber = generateRequestNumber();
-            const bookingData = {
-                requestNumber,
-                tripType,
-                from, to,
-                departDate,
+            const reqNum = `REQ${Date.now().toString().slice(-6)}${Math.random().toString(36).substring(2,5).toUpperCase()}`;
+            const data = {
+                requestNumber: reqNum,
+                tripType, from, to, departDate,
                 returnDate: tripType === 'ไป-กลับ' ? returnDate : '-',
                 adults: counts.adult,
                 children: counts.child,
@@ -621,4 +534,30 @@
                 seatClass,
                 airline: airline || '-',
                 directFlight: directFlight ? 'ใช่' : 'ไม่',
-                phone:
+                phone: phone || '-',
+                userName: userProfile?.displayName || 'ไม่ระบุ',
+                userId: userProfile?.userId || 'unknown',
+                timestamp: new Date().toLocaleString('th-TH')
+            };
+            
+            showLoading(true);
+            
+            try {
+                const resp = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                showMessage('success', `✅ ส่งข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
+                
+                if (typeof liff !== 'undefined' && liff.isInClient()) {
+                    const msg = `📋 คำขอจองตั๋ว #${reqNum}\n\n` +
+                        `🛫 ${tripType}\n` +
+                        `📍 ${from} → ${to}\n` +
+                        `📅 ไป: ${departDate}${tripType==='ไป-กลับ'?`\n📅 กลับ: ${returnDate}`:''}\n` +
+                        `👥 ${counts.adult} ผู้ใหญ่, ${counts.child} เด็ก, ${counts.infant} ทารก\n` +
+                        `💺 ${seatClass}\n` +
+                        `${airline?`✈️ สายการบิน: ${airline}\n`:''}` +
+                        `${directFlight?'✅ บินตรง\n':''}` +
