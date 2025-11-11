@@ -22,12 +22,12 @@
         .section { background: #f8f9fa; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
         .section-title { font-size: 14px; color: #2e7d32; margin-bottom: 15px; font-weight: 600; }
         .location-inputs { display: flex; gap: 15px; align-items: center; }
-        .input-group { flex: 1; }
+        .input-group { flex: 1; position: relative; }
         .input-group label { display: block; margin-bottom: 8px; color: #666; font-size: 14px; }
         .input-group input, .input-group select { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; transition: all 0.3s; }
         .input-group input:focus, .input-group select:focus { outline: none; border-color: #2e7d32; }
         .input-group input:disabled { background: #f5f5f5; cursor: not-allowed; }
-        .input-group input[readonly] { cursor: pointer; }
+        .input-group input[readonly] { cursor: pointer; background: white !important; }
         .input-group small { display: block; margin-top: 5px; color: #999; font-size: 12px; }
         .input-group .error { color: #d32f2f; font-size: 12px; margin-top: 5px; display: none; }
         .input-group.has-error input { border-color: #d32f2f; }
@@ -113,15 +113,15 @@
                 <div class="date-inputs">
                     <div class="input-group" id="departGroup">
                         <label>ขาไป</label>
-                        <input type="text" id="departDate" placeholder="วว/ดด/ปปปป" readonly style="background: white;">
-                        <input type="date" id="departDatePicker" style="display: none;">
+                        <input type="text" id="departDate" placeholder="เลือกวันที่..." readonly style="background: white; cursor: pointer;">
+                        <input type="date" id="departDatePicker" style="position: absolute; opacity: 0; pointer-events: none;">
                         <small>เลือกวันที่เดินทางขาไป</small>
                         <small class="error">วันที่ไม่ถูกต้อง</small>
                     </div>
                     <div class="input-group" id="returnGroup">
                         <label>ขากลับ</label>
-                        <input type="text" id="returnDate" placeholder="วว/ดด/ปปปป" readonly style="background: white;">
-                        <input type="date" id="returnDatePicker" style="display: none;">
+                        <input type="text" id="returnDate" placeholder="เลือกวันที่..." readonly style="background: white; cursor: pointer;">
+                        <input type="date" id="returnDatePicker" style="position: absolute; opacity: 0; pointer-events: none;">
                         <small>เลือกวันที่เดินทางขากลับ</small>
                         <small class="error">วันที่ไม่ถูกต้อง</small>
                     </div>
@@ -241,17 +241,31 @@
         
         departPicker.min = today;
         returnPicker.min = today;
+        
+        // Set initial depart date to today
         departPicker.value = today;
         departDisplay.value = formatDateThai(today);
         
         // Show date picker when clicking display input
-        departDisplay.addEventListener('click', () => {
-            departPicker.showPicker?.() || departPicker.click();
+        departDisplay.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (departPicker.showPicker) {
+                departPicker.showPicker();
+            } else {
+                departPicker.focus();
+                departPicker.click();
+            }
         });
         
-        returnDisplay.addEventListener('click', () => {
+        returnDisplay.addEventListener('click', (e) => {
+            e.preventDefault();
             if (!returnPicker.disabled) {
-                returnPicker.showPicker?.() || returnPicker.click();
+                if (returnPicker.showPicker) {
+                    returnPicker.showPicker();
+                } else {
+                    returnPicker.focus();
+                    returnPicker.click();
+                }
             }
         });
         
@@ -465,4 +479,4 @@
                             infants > 0 ? `ทารก ${infants} คน` : ''
                         ].filter(Boolean).join(', ');
                         
-                        const msg = `✅ ส่งคำขอจองตั๋วเรียบร้อยแล้ว\n━━━━━━━━━━━━━━━━\n📋 หมายเลข: ${reqNum}\n\n🛫 ประเภท: ${tripType}\n📍 ${from} → ${to}\n📅 วันไป: ${departDate}${tripType === 'ไป-กลับ' ? `\n📅 วันกลับ: ${returnDate}` : ''}\n\n👥
+                        const msg = `✅ ส่งคำขอจองตั๋วเรียบร้อยแล้ว\n━━━━━━━━━━━━━━━━\n📋 หมายเลข: ${reqNum}\n\n🛫 ประเภท: ${tripType}\n📍 ${from} → ${to}\n📅 วันไป: ${departDate}${tripType === 'ไป-กลับ' ? `\n📅 วันกลับ: ${returnDate}` : ''}\n\n👥 ผู้โดยสาร: ${passengerInfo}\n💺 ชั้น: ${seatClass}\n✈️ สายการบิน: ${airline || 'ไม่ระบุ'}\n${directFlight ? '✈️ บินตรง' :
