@@ -300,14 +300,38 @@
         });
         
         // Initialize LIFF
-        window.onload = async () => {
+        window.addEventListener('load', async () => {
+            // Wait for LIFF SDK to load
+            let retries = 0;
+            const maxRetries = 10;
+            
+            const waitForLiff = () => {
+                return new Promise((resolve, reject) => {
+                    const checkLiff = setInterval(() => {
+                        retries++;
+                        if (typeof liff !== 'undefined') {
+                            clearInterval(checkLiff);
+                            resolve(true);
+                        } else if (retries >= maxRetries) {
+                            clearInterval(checkLiff);
+                            reject(new Error('LIFF SDK failed to load'));
+                        }
+                    }, 300);
+                });
+            };
+            
+            try {
+                showDebug('รอ LIFF SDK โหลด...');
+                await waitForLiff();
+                showDebug('✅ LIFF SDK โหลดสำเร็จ');
+            } catch (error) {
+                showDebug('❌ LIFF SDK ไม่พร้อมใช้งาน - กรุณาเปิดไฟล์บน HTTPS Server');
+                showMessage('error', '⚠️ กรุณาอัปโหลดไฟล์ขึ้น Web Server (ต้องใช้ HTTPS)');
+                return;
+            }
+            
             try {
                 showDebug('กำลังเริ่มต้น LIFF...');
-                
-                if (typeof liff === 'undefined') {
-                    showDebug('⚠️ LIFF SDK ไม่พร้อมใช้งาน');
-                    return;
-                }
                 
                 await liff.init({ liffId: CONFIG.LIFF_ID });
                 showDebug('✅ LIFF เริ่มต้นสำเร็จ');
@@ -333,7 +357,7 @@
                 showDebug(`❌ LIFF Error: ${error.message}`);
                 showMessage('error', '❌ เกิดข้อผิดพลาดในการเชื่อมต่อ LINE');
             }
-        };
+        });
         
         // Swap button
         document.getElementById('swapBtn').addEventListener('click', () => {
@@ -479,4 +503,35 @@
                             infants > 0 ? `ทารก ${infants} คน` : ''
                         ].filter(Boolean).join(', ');
                         
-                        const msg = `✅ ส่งคำขอจองตั๋วเรียบร้อยแล้ว\n━━━━━━━━━━━━━━━━\n📋 หมายเลข: ${reqNum}\n\n🛫 ประเภท: ${tripType}\n📍 ${from} → ${to}\n📅 วันไป: ${departDate}${tripType === 'ไป-กลับ' ? `\n📅 วันกลับ: ${returnDate}` : ''}\n\n👥 ผู้โดยสาร: ${passengerInfo}\n💺 ชั้น: ${seatClass}\n✈️ สายการบิน: ${airline || 'ไม่ระบุ'}\n${directFlight ? '✈️ บินตรง' :
+                        const msg = `✅ ส่งคำขอจองตั๋วเรียบร้อยแล้ว\n━━━━━━━━━━━━━━━━\n📋 หมายเลข: ${reqNum}\n\n🛫 ประเภท: ${tripType}\n📍 ${from} → ${to}\n📅 วันไป: ${departDate}${tripType === 'ไป-กลับ' ? `\n📅 วันกลับ: ${returnDate}` : ''}\n\n👥 ผู้โดยสาร: ${passengerInfo}\n💺 ชั้น: ${seatClass}\n✈️ สายการบิน: ${airline || 'ไม่ระบุ'}\n${directFlight ? '✈️ บินตรง' : ''}${phone !== '-' ? `\n📞 เบอร์: ${phone}` : ''}\n\n💬 เจ้าหน้าที่จะติดต่อกลับเร็วๆ นี้ค่ะ`;
+                        
+                        await liff.sendMessages([{
+                            type: 'text',
+                            text: msg
+                        }]);
+                        
+                        showDebug('✅ ส่งข้อความ LINE สำเร็จ');
+                        showMessage('success', `✅ ส่งคำขอสำเร็จ! หมายเลข: ${reqNum}`);
+                        
+                        setTimeout(() => {
+                            liff.closeWindow();
+                        }, 2000);
+                        
+                    } catch (lineError) {
+                        console.error('LINE Error:', lineError);
+                        showDebug(`⚠️ LINE Error: ${lineError.message}`);
+                        showMessage('success', `✅ บันทึกข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Submit Error:', error);
+                showDebug(`❌ Error: ${error.message}`);
+                showMessage('error', '❌ เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+            } finally {
+                showLoading(false);
+            }
+        });
+    </script>
+</body>
+</html>
