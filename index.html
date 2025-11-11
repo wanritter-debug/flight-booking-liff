@@ -44,7 +44,7 @@
         .counter-btn { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #2e7d32; background: white; color: #2e7d32; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
         .counter-btn:hover:not(:disabled) { background: #2e7d32; color: white; }
         .counter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        .counter-value { font-size: 18px; font-weight: bold; min-width: 30px; text-align: center; }
+        .counter-input { width: 60px; font-size: 18px; font-weight: bold; text-align: center; border: 2px solid #e0e0e0; border-radius: 8px; padding: 5px; }
         .submit-btn { width: 100%; padding: 18px; background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; border: none; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4); }
         .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46, 125, 50, 0.6); }
         .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -80,7 +80,7 @@
             <div class="section">
                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
                     <input type="checkbox" id="directFlight" style="width: 20px; height: 20px; cursor: pointer; accent-color: #2e7d32;">
-                    <span style="font-size: 16px;">✈️ บินตรง (ไม่แวะจอด)</span>
+                    <span style="font-size: 16px;">✈️ บินตรง</span>
                 </label>
             </div>
             <div class="section">
@@ -114,14 +114,14 @@
                 <div class="date-inputs">
                     <div class="input-group" id="departGroup">
                         <label>ขาไป</label>
-                        <input type="text" id="departDate" placeholder="วว/ดด/ปปปป" maxlength="10">
-                        <small>รูปแบบ: วัน/เดือน/ปี (เช่น 10/11/2568)</small>
+                        <input type="date" id="departDate">
+                        <small>เลือกวันที่เดินทางขาไป</small>
                         <small class="error">วันที่ไม่ถูกต้อง</small>
                     </div>
                     <div class="input-group" id="returnGroup">
                         <label>ขากลับ</label>
-                        <input type="text" id="returnDate" placeholder="วว/ดด/ปปปป" maxlength="10">
-                        <small>รูปแบบ: วัน/เดือน/ปี (เช่น 15/11/2568)</small>
+                        <input type="date" id="returnDate">
+                        <small>เลือกวันที่เดินทางขากลับ</small>
                         <small class="error">วันที่ไม่ถูกต้อง</small>
                     </div>
                 </div>
@@ -132,7 +132,7 @@
                     <div class="passenger-info"><h3>ผู้ใหญ่</h3><p>อายุ 12 ปีขึ้นไป</p></div>
                     <div class="counter">
                         <button class="counter-btn" type="button" data-type="adult" data-delta="-1">−</button>
-                        <span class="counter-value" id="adult-count">1</span>
+                        <input type="number" class="counter-input" id="adult-count" min="1" value="1">
                         <button class="counter-btn" type="button" data-type="adult" data-delta="1">+</button>
                     </div>
                 </div>
@@ -140,7 +140,7 @@
                     <div class="passenger-info"><h3>เด็ก</h3><p>อายุ 2-11 ปี</p></div>
                     <div class="counter">
                         <button class="counter-btn" type="button" data-type="child" data-delta="-1">−</button>
-                        <span class="counter-value" id="child-count">0</span>
+                        <input type="number" class="counter-input" id="child-count" min="0" value="0">
                         <button class="counter-btn" type="button" data-type="child" data-delta="1">+</button>
                     </div>
                 </div>
@@ -148,7 +148,7 @@
                     <div class="passenger-info"><h3>ทารกนั่งตัก</h3><p>อายุต่ำกว่า 2 ปี</p></div>
                     <div class="counter">
                         <button class="counter-btn" type="button" data-type="infant" data-delta="-1">−</button>
-                        <span class="counter-value" id="infant-count">0</span>
+                        <input type="number" class="counter-input" id="infant-count" min="0" value="0">
                         <button class="counter-btn" type="button" data-type="infant" data-delta="1">+</button>
                     </div>
                 </div>
@@ -187,24 +187,65 @@
     <script>
         const CONFIG={GOOGLE_SCRIPT_URL:'https://script.google.com/macros/s/AKfycbzHCDj9qT3iow-Tjftmwztiqz77HkPW8teCM1PF7_KT5xSZmXwzTaJpLNM2lqa-tCuTqQ/exec',LIFF_ID:'2008429094-y2WmXkYQ'};
         let counts={adult:1,child:0,infant:0},userProfile=null;
+        
         function showMessage(t,m){const e=document.getElementById(t==='success'?'successMessage':'errorMessage');e.textContent=m;e.style.display='block';setTimeout(()=>e.style.display='none',5000);}
         function showLoading(s){document.getElementById('loadingOverlay').classList.toggle('active',s);document.getElementById('submitBtn').disabled=s;}
         function showError(g,m){const el=document.getElementById(g);if(el){el.classList.add('has-error');const e=el.querySelector('.error');if(e&&m)e.textContent=m;}}
         function clearError(g){const el=document.getElementById(g);if(el)el.classList.remove('has-error');}
-        function getTodayThaiDate(){const d=new Date();return`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()+543}`;}
-        function formatDateInput(i){let v=i.value.replace(/\D/g,'');if(v.length>=2)v=v.slice(0,2)+'/'+v.slice(2);if(v.length>=5)v=v.slice(0,5)+'/'+v.slice(5,9);i.value=v;}
-        function isValidDate(d,m,y){if(d<1||d>31||m<1||m>12||y<2500)return false;const days=[31,28,31,30,31,30,31,31,30,31,30,31],gy=y-543;if((gy%4===0&&gy%100!==0)||gy%400===0)days[1]=29;return d<=days[m-1];}
-        function validateThaiDate(s){if(!s)return false;const p=s.split('/');if(p.length!==3)return false;const d=parseInt(p[0]),m=parseInt(p[1]),y=parseInt(p[2]);if(!isValidDate(d,m,y))return false;const inputDate=new Date(y-543,m-1,d),today=new Date();today.setHours(0,0,0,0);return inputDate>=today;}
-        function thaiDateToISO(s){if(!s)return'';const p=s.split('/');return`${parseInt(p[2])-543}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;}
-        function compareDates(d1,d2){const iso1=thaiDateToISO(d1),iso2=thaiDateToISO(d2);return iso1<iso2?-1:iso1>iso2?1:0;}
+        function getTodayDate(){const d=new Date();return d.toISOString().split('T')[0];}
+        function dateToThaiFormat(dateStr){if(!dateStr)return'';const d=new Date(dateStr);const day=String(d.getDate()).padStart(2,'0');const month=String(d.getMonth()+1).padStart(2,'0');const year=d.getFullYear()+543;return`${day}/${month}/${year}`;}
         function validatePhone(p){if(!p)return true;return/^0[0-9]{8,9}$/.test(p.replace(/[-\s]/g,''));}
-        ['departDate','returnDate'].forEach(id=>{const input=document.getElementById(id);input.addEventListener('input',()=>{formatDateInput(input);clearError(id+'Group');});input.addEventListener('blur',()=>{if(input.value&&!validateThaiDate(input.value))showError(id+'Group','วันที่ไม่ถูกต้อง');});});
-        document.getElementById('departDate').value=getTodayThaiDate();
-        document.querySelectorAll('input[name="trip"]').forEach(r=>{r.addEventListener('change',function(){const ret=document.getElementById('returnDate'),retG=document.getElementById('returnGroup');if(this.value==='เที่ยวเดียว'){ret.disabled=true;ret.value='';retG.style.opacity='0.5';}else{ret.disabled=false;retG.style.opacity='1';}});});
+        
+        // ตั้งค่าวันที่ขั้นต่ำเป็นวันนี้
+        const departInput=document.getElementById('departDate');
+        const returnInput=document.getElementById('returnDate');
+        const today=getTodayDate();
+        departInput.min=today;
+        returnInput.min=today;
+        departInput.value=today;
+        
+        // เมื่อเปลี่ยนวันที่ขาไป ให้อัพเดตวันที่ขากลับขั้นต่ำ
+        departInput.addEventListener('change',()=>{
+            returnInput.min=departInput.value;
+            clearError('departGroup');
+        });
+        
+        returnInput.addEventListener('change',()=>{
+            clearError('returnGroup');
+        });
+        
+        // เมื่อเลือกเที่ยวเดียว จะปิด ขากลับอัตโนมัติ
+        document.querySelectorAll('input[name="trip"]').forEach(r=>{r.addEventListener('change',function(){const ret=document.getElementById('returnDate'),retG=document.getElementById('returnGroup');if(this.value==='เที่ยวเดียว'){ret.disabled=true;ret.value='';retG.style.opacity='0.5';clearError('returnGroup');}else{ret.disabled=false;retG.style.opacity='1';}});});
+        
         window.onload=()=>{if(typeof liff!=='undefined'){liff.init({liffId:CONFIG.LIFF_ID}).then(()=>{if(liff.isInClient()){liff.getProfile().then(p=>{userProfile=p;document.getElementById('userInfo').style.display='flex';document.getElementById('userName').textContent=p.displayName;document.getElementById('userPicture').src=p.pictureUrl;}).catch(console.error);}}).catch(console.error);}};
+        
         document.getElementById('swapBtn').addEventListener('click',()=>{const from=document.getElementById('from'),to=document.getElementById('to');[from.value,to.value]=[to.value,from.value];clearError('fromGroup');clearError('toGroup');});
-        document.querySelectorAll('.counter-btn').forEach(btn=>{btn.addEventListener('click',function(){const type=this.getAttribute('data-type'),delta=parseInt(this.getAttribute('data-delta')),newVal=counts[type]+delta;if(type==='adult'&&newVal<1)return;if(newVal<0||newVal>9)return;if(type==='infant'&&newVal>counts.adult){showMessage('error','⚠️ จำนวนทารกต้องไม่เกินจำนวนผู้ใหญ่');return;}if(type==='adult'&&newVal<counts.infant){showMessage('error','⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารกมากกว่า');return;}const temp={...counts,[type]:newVal},total=temp.adult+temp.child+temp.infant;if(total>9){showMessage('error','⚠️ จำนวนผู้โดยสารรวมต้องไม่เกิน 9 คน');return;}counts[type]=newVal;document.getElementById(`${type}-count`).textContent=newVal;});});
-        document.getElementById('submitBtn').addEventListener('click',async()=>{['fromGroup','toGroup','departGroup','returnGroup','phoneGroup'].forEach(clearError);const tripType=document.querySelector('input[name="trip"]:checked').value,from=document.getElementById('from').value.trim(),to=document.getElementById('to').value.trim(),departDate=document.getElementById('departDate').value.trim(),returnDate=document.getElementById('returnDate').value.trim(),phone=document.getElementById('phone').value.trim(),airline=document.getElementById('airline').value.trim(),directFlight=document.getElementById('directFlight').checked,seatClass=document.getElementById('class').value;let hasError=false;if(!from){showError('fromGroup','กรุณากรอกต้นทาง');hasError=true;}if(!to){showError('toGroup','กรุณากรอกปลายทาง');hasError=true;}if(!departDate||!validateThaiDate(departDate)){showError('departGroup','วันที่ขาไปไม่ถูกต้อง');hasError=true;}if(tripType==='ไป-กลับ'){if(!returnDate||!validateThaiDate(returnDate)){showError('returnGroup','วันที่ขากลับไม่ถูกต้อง');hasError=true;}else if(compareDates(departDate,returnDate)>=0){showError('returnGroup','วันที่กลับต้องหลังวันที่ไป');hasError=true;}}if(phone&&!validatePhone(phone)){showError('phoneGroup','เบอร์โทรศัพท์ไม่ถูกต้อง');hasError=true;}if(hasError){showMessage('error','❌ กรุณาตรวจสอบข้อมูลให้ถูกต้อง');return;}const reqNum=`REQ${Date.now().toString().slice(-6)}${Math.random().toString(36).substring(2,5).toUpperCase()}`,data={requestNumber:reqNum,tripType,from,to,departDate,returnDate:tripType==='ไป-กลับ'?returnDate:'-',adults:counts.adult,children:counts.child,infants:counts.infant,seatClass,airline:airline||'-',directFlight:directFlight?'ใช่':'ไม่',phone:phone||'-',userName:userProfile?.displayName||'ไม่ระบุ',userId:userProfile?.userId||'unknown',timestamp:new Date().toLocaleString('th-TH')};showLoading(true);try{await fetch(CONFIG.GOOGLE_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});showMessage('success',`✅ ส่งข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);if(typeof liff!=='undefined'&&liff.isInClient()){const msg=`📋 คำขอจองตั๋ว #${reqNum}\n\n🛫 ${tripType}\n📍 ${from} → ${to}\n📅 ไป: ${departDate}${tripType==='ไป-กลับ'?`\n📅 กลับ: ${returnDate}`:''}\n👥 ${counts.adult} ผู้ใหญ่, ${counts.child} เด็ก, ${counts.infant} ทารก\n💺 ${seatClass}\n${airline?`✈️ ${airline}\n`:''}${directFlight?'✅ บินตรง\n':''}${phone?`📞 ${phone}\n`:''}\nเจ้าหน้าที่จะติดต่อกลับเร็วๆนี้ค่ะ`;liff.sendMessages([{type:'text',text:msg}]).then(()=>liff.closeWindow()).catch(console.error);}}catch(err){console.error(err);showMessage('error','❌ เกิดข้อผิดพลาด กรุณาลองใหม่');}finally{showLoading(false);}});
-    </script>
-</body>
-</html>
+        
+        // ปุ่ม +/- สำหรับจำนวนผู้โดยสาร
+        document.querySelectorAll('.counter-btn').forEach(btn=>{btn.addEventListener('click',function(){const type=this.getAttribute('data-type'),delta=parseInt(this.getAttribute('data-delta')),input=document.getElementById(`${type}-count`),newVal=parseInt(input.value)+delta;if(type==='adult'&&newVal<1)return;if(newVal<0)return;const adultCount=type==='adult'?newVal:parseInt(document.getElementById('adult-count').value),infantCount=type==='infant'?newVal:parseInt(document.getElementById('infant-count').value);if(type==='infant'&&newVal>adultCount){showMessage('error','⚠️ จำนวนทารกต้องไม่เกินจำนวนผู้ใหญ่');return;}if(type==='adult'&&newVal<infantCount){showMessage('error','⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารกมากกว่า');return;}input.value=newVal;counts[type]=newVal;});});
+        
+        // รองรับการพิมพ์จำนวนผู้โดยสารเอง
+        document.querySelectorAll('.counter-input').forEach(input=>{input.addEventListener('input',function(){const type=this.id.replace('-count','');let val=parseInt(this.value)||0;if(type==='adult'&&val<1)val=1;if(val<0)val=0;const adultCount=type==='adult'?val:parseInt(document.getElementById('adult-count').value),infantCount=type==='infant'?val:parseInt(document.getElementById('infant-count').value);if(type==='infant'&&val>adultCount){showMessage('error','⚠️ จำนวนทารกต้องไม่เกินจำนวนผู้ใหญ่');val=adultCount;}if(type==='adult'&&val<infantCount){showMessage('error','⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารกมากกว่า');val=infantCount;}this.value=val;counts[type]=val;});});
+        
+        // ส่งข้อมูลไป Google Sheets และ LINE Chat
+        document.getElementById('submitBtn').addEventListener('click',async()=>{['fromGroup','toGroup','departGroup','returnGroup','phoneGroup'].forEach(clearError);const tripType=document.querySelector('input[name="trip"]:checked').value,from=document.getElementById('from').value.trim(),to=document.getElementById('to').value.trim(),departDate=document.getElementById('departDate').value,returnDate=document.getElementById('returnDate').value,phone=document.getElementById('phone').value.trim(),airline=document.getElementById('airline').value.trim(),directFlight=document.getElementById('directFlight').checked,seatClass=document.getElementById('class').value;
+        
+        counts.adult=parseInt(document.getElementById('adult-count').value)||1;counts.child=parseInt(document.getElementById('child-count').value)||0;counts.infant=parseInt(document.getElementById('infant-count').value)||0;
+        
+        let hasError=false;if(!from){showError('fromGroup','กรุณากรอกต้นทาง');hasError=true;}if(!to){showError('toGroup','กรุณากรอกปลายทาง');hasError=true;}if(!departDate){showError('departGroup','กรุณาเลือกวันที่ขาไป');hasError=true;}if(tripType==='ไป-กลับ'){if(!returnDate){showError('returnGroup','กรุณาเลือกวันที่ขากลับ');hasError=true;}else if(returnDate<=departDate){showError('returnGroup','วันที่กลับต้องหลังวันที่ไป');hasError=true;}}if(phone&&!validatePhone(phone)){showError('phoneGroup','เบอร์โทรศัพท์ไม่ถูกต้อง');hasError=true;}if(hasError){showMessage('error','❌ กรุณาตรวจสอบข้อมูลให้ถูกต้อง');return;}
+        
+        const departDateThai=dateToThaiFormat(departDate);
+        const returnDateThai=returnDate?dateToThaiFormat(returnDate):'-';
+        const reqNum=`REQ${Date.now().toString().slice(-6)}${Math.random().toString(36).substring(2,5).toUpperCase()}`,data={requestNumber:reqNum,tripType,from,to,departDate:departDateThai,returnDate:tripType==='ไป-กลับ'?returnDateThai:'-',adults:counts.adult,children:counts.child,infants:counts.infant,seatClass,airline:airline||'-',directFlight:directFlight?'ใช่':'ไม่',phone:phone||'-',userName:userProfile?.displayName||'ไม่ระบุ',userId:userProfile?.userId||'unknown',timestamp:new Date().toLocaleString('th-TH')};
+        
+        showLoading(true);
+        
+        try{
+            // ส่งข้อมูลไป Google Sheets
+            await fetch(CONFIG.GOOGLE_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+            showMessage('success',`✅ ส่งข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
+            
+            // ส่งข้อมูลไป LINE Chat
+            if(typeof liff!=='undefined'&&liff.isInClient()){
+                const msg=`📋 คำขอจองตั๋ว #${reqNum}\n\n🛫 ${tripType}\n📍 ${from} → ${to}\n📅 ไป: ${departDateThai}${tripType==='ไป-กลับ'?`\n📅 กลับ: ${returnDateThai}`:''}\n👥 ${counts.adult} ผู้ใหญ่, ${counts.child} เด็ก, ${counts.infant} ทารก\n💺 ${seatClass}\n${airline?`✈️ ${airline}\n`:''}${directFlight?'✅ บินตรง\n':''}${phone?`📞 ${phone}\n`:''}\nเจ้าหน้าที่จะติดต่อกลับเร็วๆนี้ค่ะ`;
+                liff.sendMessages([{type:'text',text:msg}]).then(()=>setTimeout(
