@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>จองตั๋วเครื่องบิน</title>
+    <title>จองตั๋วเครื่องบิน - Al Hijrah & Travel</title>
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,8 +25,11 @@
             margin: auto;
         }
         .header { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; padding: 30px 20px; text-align: center; border-radius: 20px 20px 0 0; }
+        .company-logo { width: 80px; height: 80px; background: white; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .header h1 { font-size: 28px; margin-bottom: 5px; }
         .header p { font-size: 14px; opacity: 0.95; }
+        .iata-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 20px; margin-top: 10px; font-size: 13px; }
+        .iata-badge svg { width: 20px; height: 20px; fill: white; }
         .user-info { display: flex; align-items: center; gap: 10px; margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; }
         .user-info img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; }
         .form-container { padding: 30px 20px; }
@@ -126,8 +129,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>เที่ยวบิน</h1>
+            <div class="company-logo">
+                <img src="https://drive.google.com/uc?export=view&id=1Naun9bHSGLTcDmicVkrVVDWRn5DTFhGl" alt="Al Hijrah & Travel" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+            </div>
+            <h1>Al Hijrah & Travel</h1>
             <p>เช็คราคาตั๋วเครื่องบิน เป็นที่ปรึกษาให้คุณ 😊</p>
+            <div class="iata-badge">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <span>IATA Accredited Agent • LIC. 35-3 0728 5</span>
+            </div>
             <div class="user-info" id="userInfo" style="display: none;">
                 <img id="userPicture" src="" alt="Profile">
                 <div class="name" id="userName">กำลังโหลด...</div>
@@ -303,37 +315,26 @@
             return /^0[0-9]{8,9}$/.test(phone.replace(/[-\s]/g, ''));
         }
         
-        // Setup date inputs with Thai format display
+        // Setup date inputs
         const departPicker = document.getElementById('departDatePicker');
         const returnPicker = document.getElementById('returnDatePicker');
         const today = getTodayDate();
         
         departPicker.min = today;
         returnPicker.min = today;
-        
-        // Set initial depart date to today
         departPicker.value = today;
         
-        // Show date picker when clicking display input
-        departPicker.addEventListener('click', (e) => {
-            clearError('departGroup');
+        departPicker.addEventListener('click', () => clearError('departGroup'));
+        returnPicker.addEventListener('click', () => {
+            if (!returnPicker.disabled) clearError('returnGroup');
         });
         
-        returnPicker.addEventListener('click', (e) => {
-            if (!returnPicker.disabled) {
-                clearError('returnGroup');
-            }
-        });
-        
-        // Update display when date changes
         departPicker.addEventListener('change', () => {
             returnPicker.min = departPicker.value;
             clearError('departGroup');
         });
         
-        returnPicker.addEventListener('change', () => {
-            clearError('returnGroup');
-        });
+        returnPicker.addEventListener('change', () => clearError('returnGroup'));
         
         // Trip type change
         document.querySelectorAll('input[name="trip"]').forEach(radio => {
@@ -352,7 +353,6 @@
         
         // Initialize LIFF
         window.addEventListener('load', async () => {
-            // Wait for LIFF SDK to load
             let retries = 0;
             const maxRetries = 10;
             
@@ -383,7 +383,6 @@
             
             try {
                 showDebug('กำลังเริ่มต้น LIFF...');
-                
                 await liff.init({ liffId: CONFIG.LIFF_ID });
                 showDebug('✅ LIFF เริ่มต้นสำเร็จ');
                 
@@ -447,7 +446,6 @@
         
         // Submit form
         document.getElementById('submitBtn').addEventListener('click', async () => {
-            // Clear previous errors
             ['fromGroup', 'toGroup', 'departGroup', 'returnGroup', 'phoneGroup'].forEach(clearError);
             
             const tripType = document.querySelector('input[name="trip"]:checked').value;
@@ -502,7 +500,6 @@
                 return;
             }
             
-            // Convert to Thai format for display
             const departDate = formatDateThai(departDateValue);
             const returnDate = returnDateValue ? formatDateThai(returnDateValue) : '-';
             
@@ -530,7 +527,6 @@
             showLoading(true);
             
             try {
-                // Send to Google Sheets
                 showDebug('กำลังส่งข้อมูลไป Google Sheets...');
                 await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
                     method: 'POST',
@@ -542,7 +538,6 @@
                 });
                 showDebug('✅ ส่งข้อมูลไป Google Sheets สำเร็จ');
                 
-                // Send to LINE Chat
                 if (!isLiffReady) {
                     showDebug('⚠️ LIFF ไม่พร้อม - ข้ามการส่งข้อความ LINE');
                     showMessage('success', `✅ บันทึกข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
