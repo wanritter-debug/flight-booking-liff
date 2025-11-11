@@ -47,8 +47,21 @@
         .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46, 125, 50, 0.6); }
         .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .footer-note { text-align: center; color: #999; font-size: 13px; margin-top: 15px; }
-        .loading-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center; }
-        .loading-overlay.active { display: flex; }
+        .loading-overlay { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            background: rgba(0,0,0,0.7); 
+            z-index: 9999;
+        }
+        .loading-overlay.active { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
         .loading-content { background: white; padding: 30px; border-radius: 15px; text-align: center; }
         .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #2e7d32; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -167,7 +180,7 @@
                 <div class="section-title">📝 รายละเอียดเพิ่มเติม</div>
                 <div class="input-group">
                     <label>ความต้องการพิเศษ (ไม่บังคับ)</label>
-                    <textarea id="specialRequest" rows="4" placeholder="เช่น ต้องการที่นั่งติดหน้าต่าง, มีสัมภาระขนาดใหญ่, ต้องการอาหารมังสวิรัติ, เดินทางกับผู้สูงอายุ/เด็กเล็ก ฯลฯ" style="width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; transition: all 0.3s; resize: vertical; min-height: 100px;"></textarea>
+                    <textarea id="specialRequest" rows="4" placeholder="เช่น ต้องการที่นั่งติดหน้าต่าง, มีสัมภาระขนาดใหญ่, ต้องการอาหารมังสวิรัติ, เดินทางกับผู้สูงอายุ/เด็กเล็ก ฯลฯ"></textarea>
                     <small>ระบุความต้องการพิเศษหรือข้อมูลเพิ่มเติมที่ต้องการแจ้งเจ้าหน้าที่</small>
                 </div>
             </div>
