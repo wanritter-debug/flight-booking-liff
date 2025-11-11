@@ -4,24 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>จองตั๋วเครื่องบิน</title>
-    
-    <!-- LIFF SDK -->
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
             min-height: 100vh;
             padding: 20px 0;
         }
-
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -30,25 +21,14 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             overflow: hidden;
         }
-
         .header {
             background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
             color: white;
             padding: 30px 20px;
             text-align: center;
-            position: relative;
         }
-
-        .header h1 {
-            font-size: 28px;
-            margin-bottom: 5px;
-        }
-
-        .header p {
-            font-size: 14px;
-            opacity: 0.95;
-        }
-
+        .header h1 { font-size: 28px; margin-bottom: 5px; }
+        .header p { font-size: 14px; opacity: 0.95; }
         .user-info {
             display: flex;
             align-items: center;
@@ -58,83 +38,44 @@
             background: rgba(255,255,255,0.2);
             border-radius: 10px;
         }
-
         .user-info img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             border: 2px solid white;
         }
-
-        .user-info .name {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .form-container {
-            padding: 30px 20px;
-        }
-
-        .trip-type {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .radio-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
+        .user-info .name { font-size: 14px; opacity: 0.9; }
+        .form-container { padding: 30px 20px; }
+        .trip-type { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+        .radio-group { display: flex; align-items: center; gap: 8px; cursor: pointer; }
         .radio-group input[type="radio"] {
             width: 20px;
             height: 20px;
             cursor: pointer;
             accent-color: #2e7d32;
         }
-
-        .radio-group label {
-            cursor: pointer;
-            font-size: 16px;
-            color: #333;
-        }
-
+        .radio-group label { cursor: pointer; font-size: 16px; color: #333; }
         .section {
             background: #f8f9fa;
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
         }
-
         .section-title {
             font-size: 14px;
             color: #2e7d32;
             margin-bottom: 15px;
             font-weight: 600;
         }
-
-        .location-inputs {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .input-group {
-            flex: 1;
-        }
-
+        .location-inputs { display: flex; gap: 15px; align-items: center; }
+        .input-group { flex: 1; }
         .input-group label {
             display: block;
             margin-bottom: 8px;
             color: #666;
             font-size: 14px;
         }
-
-        .input-group input,
-        .input-group select {
+        .input-group input, .input-group select {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #e0e0e0;
@@ -142,40 +83,20 @@
             font-size: 16px;
             transition: all 0.3s;
         }
-
-        .input-group input:focus,
-        .input-group select:focus {
+        .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: #2e7d32;
         }
-
-        .input-group input:disabled {
-            background: #f5f5f5;
-            cursor: not-allowed;
-        }
-
-        .input-group small {
-            display: block;
-            margin-top: 5px;
-            color: #999;
-            font-size: 12px;
-        }
-
+        .input-group input:disabled { background: #f5f5f5; cursor: not-allowed; }
+        .input-group small { display: block; margin-top: 5px; color: #999; font-size: 12px; }
         .input-group .error {
             color: #d32f2f;
             font-size: 12px;
             margin-top: 5px;
             display: none;
         }
-
-        .input-group.has-error input {
-            border-color: #d32f2f;
-        }
-
-        .input-group.has-error .error {
-            display: block;
-        }
-
+        .input-group.has-error input { border-color: #d32f2f; }
+        .input-group.has-error .error { display: block; }
         .swap-btn {
             background: white;
             border: 2px solid #2e7d32;
@@ -190,33 +111,11 @@
             margin-top: 25px;
             flex-shrink: 0;
         }
-
-        .swap-btn:hover {
-            background: #2e7d32;
-            transform: rotate(180deg);
-        }
-
-        .swap-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .swap-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: #2e7d32;
-            transition: fill 0.3s;
-        }
-
-        .swap-btn:hover svg {
-            fill: white;
-        }
-
-        .date-inputs {
-            display: flex;
-            gap: 15px;
-        }
-
+        .swap-btn:hover { background: #2e7d32; transform: rotate(180deg); }
+        .swap-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .swap-btn svg { width: 24px; height: 24px; fill: #2e7d32; transition: fill 0.3s; }
+        .swap-btn:hover svg { fill: white; }
+        .date-inputs { display: flex; gap: 15px; }
         .passenger-row {
             display: flex;
             justify-content: space-between;
@@ -224,28 +123,10 @@
             padding: 15px 0;
             border-bottom: 1px solid #e0e0e0;
         }
-
-        .passenger-row:last-child {
-            border-bottom: none;
-        }
-
-        .passenger-info h3 {
-            font-size: 16px;
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        .passenger-info p {
-            font-size: 12px;
-            color: #999;
-        }
-
-        .counter {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
+        .passenger-row:last-child { border-bottom: none; }
+        .passenger-info h3 { font-size: 16px; margin-bottom: 5px; color: #333; }
+        .passenger-info p { font-size: 12px; color: #999; }
+        .counter { display: flex; align-items: center; gap: 15px; }
         .counter-btn {
             width: 35px;
             height: 35px;
@@ -260,17 +141,8 @@
             justify-content: center;
             transition: all 0.3s;
         }
-
-        .counter-btn:hover:not(:disabled) {
-            background: #2e7d32;
-            color: white;
-        }
-
-        .counter-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
+        .counter-btn:hover:not(:disabled) { background: #2e7d32; color: white; }
+        .counter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .counter-value {
             font-size: 18px;
             font-weight: bold;
@@ -278,7 +150,6 @@
             text-align: center;
             color: #333;
         }
-
         .submit-btn {
             width: 100%;
             padding: 18px;
@@ -292,25 +163,12 @@
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
         }
-
         .submit-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(46, 125, 50, 0.6);
         }
-
-        .submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .footer-note {
-            text-align: center;
-            color: #999;
-            font-size: 13px;
-            margin-top: 15px;
-        }
-
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .footer-note { text-align: center; color: #999; font-size: 13px; margin-top: 15px; }
         .loading-overlay {
             display: none;
             position: fixed;
@@ -323,18 +181,8 @@
             align-items: center;
             justify-content: center;
         }
-
-        .loading-overlay.active {
-            display: flex;
-        }
-
-        .loading-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-        }
-
+        .loading-overlay.active { display: flex; }
+        .loading-content { background: white; padding: 30px; border-radius: 15px; text-align: center; }
         .spinner {
             width: 50px;
             height: 50px;
@@ -344,49 +192,25 @@
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .success-message {
+        .success-message, .error-message {
             display: none;
-            background: #4caf50;
             color: white;
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
             text-align: center;
         }
-
-        .error-message {
-            display: none;
-            background: #f44336;
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
+        .success-message { background: #4caf50; }
+        .error-message { background: #f44336; }
         @media (max-width: 600px) {
-            .location-inputs {
-                flex-direction: column;
-            }
-            
-            .swap-btn {
-                margin-top: 0;
-                transform: rotate(90deg);
-            }
-
-            .swap-btn:hover {
-                transform: rotate(270deg);
-            }
-
-            .date-inputs {
-                flex-direction: column;
-            }
+            .location-inputs { flex-direction: column; }
+            .swap-btn { margin-top: 0; transform: rotate(90deg); }
+            .swap-btn:hover { transform: rotate(270deg); }
+            .date-inputs { flex-direction: column; }
         }
     </style>
 </head>
@@ -395,7 +219,6 @@
         <div class="header">
             <h1>เที่ยวบิน</h1>
             <p>เช็คราคาตั๋วเครื่องบิน เป็นที่ปรึกษาให้คุณ 😊</p>
-            
             <div class="user-info" id="userInfo" style="display: none;">
                 <img id="userPicture" src="" alt="Profile">
                 <div class="name" id="userName">กำลังโหลด...</div>
@@ -443,13 +266,11 @@
                         <input type="text" id="from" placeholder="เช่น กรุงเทพฯ, เชียงใหม่, ภูเก็ต">
                         <small class="error">กรุณากรอกต้นทาง</small>
                     </div>
-
-                    <button class="swap-btn" onclick="swapLocations()" id="swapBtn">
+                    <button class="swap-btn" onclick="swapLocations()" id="swapBtn" type="button">
                         <svg viewBox="0 0 24 24">
                             <path d="M16 17.01V10h-2v7.01h-3L15 21l4-3.99h-3zM9 3L5 6.99h3V14h2V6.99h3L9 3z"/>
                         </svg>
                     </button>
-
                     <div class="input-group" id="toGroup">
                         <label>ปลายทาง</label>
                         <input type="text" id="to" placeholder="เช่น สิงคโปร์, ฮ่องกง, โตเกียว">
@@ -489,7 +310,6 @@
                         <button class="counter-btn" onclick="changeCount('adult', 1)" type="button">+</button>
                     </div>
                 </div>
-
                 <div class="passenger-row">
                     <div class="passenger-info">
                         <h3>เด็ก</h3>
@@ -501,7 +321,6 @@
                         <button class="counter-btn" onclick="changeCount('child', 1)" type="button">+</button>
                     </div>
                 </div>
-
                 <div class="passenger-row">
                     <div class="passenger-info">
                         <h3>ทารกนั่งตัก</h3>
@@ -538,10 +357,7 @@
             </div>
 
             <button class="submit-btn" id="submitBtn" onclick="submitBooking()" type="button">เช็คราคา</button>
-            
-            <p class="footer-note">
-                💬 เจ้าหน้าที่จะตอบกลับโดยเร็วที่สุดครับ/ค่ะ
-            </p>
+            <p class="footer-note">💬 เจ้าหน้าที่จะตอบกลับโดยเร็วที่สุดครับ/ค่ะ</p>
         </div>
     </div>
 
@@ -554,7 +370,6 @@
     </div>
 
     <script>
-        // Configuration
         const CONFIG = {
             GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec',
             LIFF_ID: '2008429094-y2WmXkYQ',
@@ -566,15 +381,10 @@
         let userProfile = null;
         let isSubmitting = false;
 
-        // Utility Functions
         function formatDateInput(input) {
             let value = input.value.replace(/\D/g, '');
-            if (value.length >= 2) {
-                value = value.slice(0, 2) + '/' + value.slice(2);
-            }
-            if (value.length >= 5) {
-                value = value.slice(0, 5) + '/' + value.slice(5, 9);
-            }
+            if (value.length >= 2) value = value.slice(0, 2) + '/' + value.slice(2);
+            if (value.length >= 5) value = value.slice(0, 5) + '/' + value.slice(5, 9);
             input.value = value;
         }
 
@@ -587,19 +397,11 @@
         }
 
         function isValidDate(day, month, year) {
-            if (day < 1 || day > 31 || month < 1 || month > 12 || year < 2500) {
-                return false;
-            }
-
+            if (day < 1 || day > 31 || month < 1 || month > 12 || year < 2500) return false;
             const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-            
             const gregorianYear = year - 543;
-            const isLeap = (gregorianYear % 4 === 0 && gregorianYear % 100 !== 0) || 
-                           (gregorianYear % 400 === 0);
-            if (month === 2 && isLeap) {
-                daysInMonth[1] = 29;
-            }
-            
+            const isLeap = (gregorianYear % 4 === 0 && gregorianYear % 100 !== 0) || (gregorianYear % 400 === 0);
+            if (month === 2 && isLeap) daysInMonth[1] = 29;
             return day <= daysInMonth[month - 1];
         }
 
@@ -607,25 +409,16 @@
             if (!dateStr) return false;
             const parts = dateStr.split('/');
             if (parts.length !== 3) return false;
-            
             const day = parseInt(parts[0]);
             const month = parseInt(parts[1]);
             const year = parseInt(parts[2]);
-            
-            if (!isValidDate(day, month, year)) {
-                return false;
-            }
-
+            if (!isValidDate(day, month, year)) return false;
             if (!allowPast) {
                 const inputDate = new Date(thaiDateToISO(dateStr));
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
-                
-                if (inputDate < today) {
-                    return false;
-                }
+                if (inputDate < today) return false;
             }
-            
             return true;
         }
 
@@ -647,8 +440,7 @@
         function validatePhone(phone) {
             if (!phone) return true;
             const cleanPhone = phone.replace(/[-\s]/g, '');
-            const phoneRegex = /^0[0-9]{8,9}$/;
-            return phoneRegex.test(cleanPhone);
+            return /^0[0-9]{8,9}$/.test(cleanPhone);
         }
 
         function showError(groupId, message) {
@@ -656,26 +448,20 @@
             if (group) {
                 group.classList.add('has-error');
                 const errorEl = group.querySelector('.error');
-                if (errorEl && message) {
-                    errorEl.textContent = message;
-                }
+                if (errorEl && message) errorEl.textContent = message;
             }
         }
 
         function clearError(groupId) {
             const group = document.getElementById(groupId);
-            if (group) {
-                group.classList.remove('has-error');
-            }
+            if (group) group.classList.remove('has-error');
         }
 
         function showMessage(type, message) {
             const messageEl = document.getElementById(type === 'success' ? 'successMessage' : 'errorMessage');
             messageEl.textContent = message;
             messageEl.style.display = 'block';
-            setTimeout(() => {
-                messageEl.style.display = 'none';
-            }, 5000);
+            setTimeout(() => { messageEl.style.display = 'none'; }, 5000);
         }
 
         function showLoading(show) {
@@ -696,21 +482,15 @@
             return `REQ${timestamp}${random}`;
         }
 
-        // Date Input Setup
         function setupDateInput(inputId) {
             const input = document.getElementById(inputId);
-            
             input.addEventListener('keypress', function(e) {
-                if (!/[0-9/]/.test(e.key)) {
-                    e.preventDefault();
-                }
+                if (!/[0-9/]/.test(e.key)) e.preventDefault();
             });
-            
             input.addEventListener('input', function() {
                 formatDateInput(this);
                 clearError(inputId + 'Group');
             });
-
             input.addEventListener('blur', function() {
                 if (this.value && !validateThaiDate(this.value)) {
                     showError(inputId + 'Group', 'วันที่ไม่ถูกต้องหรืออยู่ในอดีต');
@@ -720,10 +500,8 @@
 
         setupDateInput('departDate');
         setupDateInput('returnDate');
-
         document.getElementById('departDate').value = getTodayThaiDate();
 
-        // Trip type change handler
         document.querySelectorAll('input[name="trip"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 const returnInput = document.getElementById('returnDate');
@@ -739,13 +517,11 @@
             });
         });
 
-        // LIFF Initialization
         window.onload = function() {
             if (typeof liff === 'undefined') {
-                console.warn('LIFF SDK not loaded - running in demo mode');
+                console.warn('⚠️ LIFF SDK not loaded');
                 return;
             }
-            
             liff.init({ liffId: CONFIG.LIFF_ID })
                 .then(() => {
                     if (liff.isInClient()) {
@@ -754,38 +530,95 @@
                             document.getElementById('userInfo').style.display = 'flex';
                             document.getElementById('userName').textContent = profile.displayName;
                             document.getElementById('userPicture').src = profile.pictureUrl;
-                        }).catch(err => {
-                            console.error('Profile error:', err);
-                        });
+                        }).catch(err => console.error('Profile error:', err));
                     }
                 })
-                .catch(err => {
-                    console.error('LIFF error:', err);
-                });
+                .catch(err => console.error('LIFF error:', err));
         };
 
-        // Location Swap
         function swapLocations() {
             const from = document.getElementById('from');
             const to = document.getElementById('to');
             const swapBtn = document.getElementById('swapBtn');
-            
             swapBtn.disabled = true;
             [from.value, to.value] = [to.value, from.value];
-            
-            setTimeout(() => {
-                swapBtn.disabled = false;
-            }, 300);
-
+            setTimeout(() => { swapBtn.disabled = false; }, 300);
             clearError('fromGroup');
             clearError('toGroup');
         }
 
-        // Passenger Counter - แก้ไขฟังก์ชันนี้
         function changeCount(type, delta) {
-            console.log(`Changing ${type} by ${delta}. Current: ${counts[type]}`);
-            
             const newValue = counts[type] + delta;
+            if (type === 'adult' && newValue < 1) return;
+            if (newValue < 0 || newValue > 9) return;
+            if (type === 'infant' && newValue > counts.adult) {
+                showMessage('error', '⚠️ จำนวนทารกต้องไม่เกินจำนวนผู้ใหญ่');
+                return;
+            }
+            if (type === 'adult' && newValue < counts.infant) {
+                showMessage('error', '⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารกมากกว่า');
+                return;
+            }
+            const tempCounts = {...counts, [type]: newValue};
+            const total = tempCounts.adult + tempCounts.child + tempCounts.infant;
+            if (total > 9) {
+                showMessage('error', '⚠️ จำนวนผู้โดยสารรวมต้องไม่เกิน 9 คน');
+                return;
+            }
+            counts[type] = newValue;
+            document.getElementById(`${type}-count`).textContent = newValue;
+        }
+
+        async function submitBooking() {
+            if (isSubmitting) return;
             
-            // ตรวจสอบเงื่อนไขต่างๆ
-            if (type === 'adult
+            // Clear errors
+            ['fromGroup', 'toGroup', 'departGroup', 'returnGroup', 'phoneGroup'].forEach(clearError);
+            
+            const tripType = document.querySelector('input[name="trip"]:checked').value;
+            const from = document.getElementById('from').value.trim();
+            const to = document.getElementById('to').value.trim();
+            const departDate = document.getElementById('departDate').value.trim();
+            const returnDate = document.getElementById('returnDate').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const airline = document.getElementById('airline').value.trim();
+            const directFlight = document.getElementById('directFlight').checked;
+            const seatClass = document.getElementById('class').value;
+            
+            let hasError = false;
+            
+            if (!from) { showError('fromGroup', 'กรุณากรอกต้นทาง'); hasError = true; }
+            if (!to) { showError('toGroup', 'กรุณากรอกปลายทาง'); hasError = true; }
+            if (!departDate || !validateThaiDate(departDate)) {
+                showError('departGroup', 'วันที่ขาไปไม่ถูกต้อง'); hasError = true;
+            }
+            if (tripType === 'ไป-กลับ') {
+                if (!returnDate || !validateThaiDate(returnDate)) {
+                    showError('returnGroup', 'วันที่ขากลับไม่ถูกต้อง'); hasError = true;
+                } else if (compareDates(departDate, returnDate) >= 0) {
+                    showError('returnGroup', 'วันที่กลับต้องหลังวันที่ไป'); hasError = true;
+                }
+            }
+            if (phone && !validatePhone(phone)) {
+                showError('phoneGroup', 'เบอร์โทรศัพท์ไม่ถูกต้อง'); hasError = true;
+            }
+            
+            if (hasError) {
+                showMessage('error', '❌ กรุณาตรวจสอบข้อมูลให้ถูกต้อง');
+                return;
+            }
+            
+            const requestNumber = generateRequestNumber();
+            const bookingData = {
+                requestNumber,
+                tripType,
+                from, to,
+                departDate,
+                returnDate: tripType === 'ไป-กลับ' ? returnDate : '-',
+                adults: counts.adult,
+                children: counts.child,
+                infants: counts.infant,
+                seatClass,
+                airline: airline || '-',
+                directFlight: directFlight ? 'ใช่' : 'ไม่',
+                phone:
