@@ -25,9 +25,42 @@
             margin: auto;
         }
         .header { background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; padding: 30px 20px; text-align: center; border-radius: 20px 20px 0 0; }
-        .company-logo { width: 80px; height: 80px; background: white; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .company-logo { 
+            width: 80px; 
+            height: 80px; 
+            background: white; 
+            border-radius: 50%; 
+            margin: 0 auto 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+            overflow: hidden;
+            padding: 5px;
+            position: relative;
+        }
+        .company-logo img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .company-logo-text {
+            font-size: 28px;
+            color: #2e7d32;
+            font-weight: bold;
+            display: block;
+            z-index: 1;
+        }
+        .company-logo img.loaded {
+            z-index: 2;
+        }
         .header h1 { font-size: 28px; margin-bottom: 5px; }
-        .header p { font-size: 14px; opacity: 0.95; }
+        .header p { font-size: 14px; opacity: 0.95; margin-bottom: 8px; }
+        .header .subtitle { font-size: 13px; opacity: 0.9; font-weight: 300; }
         .iata-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 20px; margin-top: 10px; font-size: 13px; }
         .iata-badge svg { width: 20px; height: 20px; fill: white; }
         .user-info { display: flex; align-items: center; gap: 10px; margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; }
@@ -130,15 +163,21 @@
     <div class="container">
         <div class="header">
             <div class="company-logo">
-                <img src="https://drive.google.com/uc?export=view&id=1Naun9bHSGLTcDmicVkrVVDWRn5DTFhGl" alt="Al Hijrah & Travel" style="width: 100%; height: 100%; object-fit: contain; border-radius: 50%;">
+                <img id="logoImage" 
+                     src="https://raw.githubusercontent.com/wanritter-debug/al-hijrah-assets/main/logo.png" 
+                     alt="Al Hijrah & Travel"
+                     crossorigin="anonymous"
+                     onerror="handleLogoError(this)">
+                <div class="company-logo-text">AH&T</div>
             </div>
             <h1>Al Hijrah & Travel</h1>
             <p>เช็คราคาตั๋วเครื่องบิน เป็นที่ปรึกษาให้คุณ 😊</p>
+            <p class="subtitle">ตัวแทนจำหน่ายตั๋วเครื่องบินอย่างเป็นทางการ</p>
             <div class="iata-badge">
                 <svg viewBox="0 0 24 24">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
-                <span>IATA Accredited Agent • LIC. 35-3 0728 5</span>
+                <span>IATA acredited Agent • LIC. 35-3 0728 5</span>
             </div>
             <div class="user-info" id="userInfo" style="display: none;">
                 <img id="userPicture" src="" alt="Profile">
@@ -315,7 +354,26 @@
             return /^0[0-9]{8,9}$/.test(phone.replace(/[-\s]/g, ''));
         }
         
-        // Setup date inputs
+        // ฟังก์ชันสำรอง fallback สำหรับโลโก้
+        function handleLogoError(img) {
+            console.log('Logo load failed, trying alternatives...');
+            const alternatives = [
+                'https://cdn.jsdelivr.net/gh/wanritter-debug/al-hijrah-assets@main/logo.png',
+                'https://raw.githubusercontent.com/wanritter-debug/al-hijrah-assets/refs/heads/main/logo.png'
+            ];
+            
+            const currentSrc = img.src;
+            const nextAlt = alternatives.find(url => url !== currentSrc);
+            
+            if (nextAlt && !img.dataset.tried) {
+                img.dataset.tried = 'true';
+                img.src = nextAlt;
+            } else {
+                img.style.display = 'none';
+                img.nextElementSibling.style.display = 'block';
+            }
+        }
+        
         const departPicker = document.getElementById('departDatePicker');
         const returnPicker = document.getElementById('returnDatePicker');
         const today = getTodayDate();
@@ -336,7 +394,6 @@
         
         returnPicker.addEventListener('change', () => clearError('returnGroup'));
         
-        // Trip type change
         document.querySelectorAll('input[name="trip"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 if (this.value === 'เที่ยวเดียว') {
@@ -351,7 +408,6 @@
             });
         });
         
-        // Initialize LIFF
         window.addEventListener('load', async () => {
             let retries = 0;
             const maxRetries = 10;
@@ -409,7 +465,6 @@
             }
         });
         
-        // Swap button
         document.getElementById('swapBtn').addEventListener('click', () => {
             const from = document.getElementById('from');
             const to = document.getElementById('to');
@@ -418,7 +473,6 @@
             clearError('toGroup');
         });
         
-        // Passenger input validation
         document.querySelectorAll('.counter-input').forEach(input => {
             input.addEventListener('input', function() {
                 const type = this.id.replace('-count', '');
@@ -444,7 +498,6 @@
             });
         });
         
-        // Submit form
         document.getElementById('submitBtn').addEventListener('click', async () => {
             ['fromGroup', 'toGroup', 'departGroup', 'returnGroup', 'phoneGroup'].forEach(clearError);
             
@@ -462,142 +515,3 @@
             const adults = parseInt(document.getElementById('adult-count').value) || 1;
             const children = parseInt(document.getElementById('child-count').value) || 0;
             const infants = parseInt(document.getElementById('infant-count').value) || 0;
-            
-            let hasError = false;
-            
-            if (!from) {
-                showError('fromGroup', 'กรุณากรอกต้นทาง');
-                hasError = true;
-            }
-            
-            if (!to) {
-                showError('toGroup', 'กรุณากรอกปลายทาง');
-                hasError = true;
-            }
-            
-            if (!departDateValue) {
-                showError('departGroup', 'กรุณาเลือกวันที่ขาไป');
-                hasError = true;
-            }
-            
-            if (tripType === 'ไป-กลับ') {
-                if (!returnDateValue) {
-                    showError('returnGroup', 'กรุณาเลือกวันที่ขากลับ');
-                    hasError = true;
-                } else if (returnDateValue <= departDateValue) {
-                    showError('returnGroup', 'วันที่กลับต้องหลังวันที่ไป');
-                    hasError = true;
-                }
-            }
-            
-            if (phone && !validatePhone(phone)) {
-                showError('phoneGroup', 'เบอร์โทรศัพท์ไม่ถูกต้อง');
-                hasError = true;
-            }
-            
-            if (hasError) {
-                showMessage('error', '❌ กรุณาตรวจสอบข้อมูลให้ถูกต้อง');
-                return;
-            }
-            
-            const departDate = formatDateThai(departDateValue);
-            const returnDate = returnDateValue ? formatDateThai(returnDateValue) : '-';
-            
-            const reqNum = `REQ${Date.now().toString().slice(-6)}${Math.random().toString(36).substring(2, 5).toUpperCase()}`;
-            const data = {
-                requestNumber: reqNum,
-                tripType: tripType,
-                from: from,
-                to: to,
-                departDate: departDate,
-                returnDate: tripType === 'ไป-กลับ' ? returnDate : '-',
-                adults: adults,
-                children: children,
-                infants: infants,
-                seatClass: seatClass,
-                airline: airline || '-',
-                directFlight: directFlight ? 'ใช่' : 'ไม่',
-                phone: phone || '-',
-                specialRequest: specialRequest || '-',
-                userName: userProfile?.displayName || 'ไม่ระบุ',
-                userId: userProfile?.userId || 'unknown',
-                timestamp: new Date().toLocaleString('th-TH')
-            };
-            
-            showLoading(true);
-            
-            try {
-                showDebug('กำลังส่งข้อมูลไป Google Sheets...');
-                await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                showDebug('✅ ส่งข้อมูลไป Google Sheets สำเร็จ');
-                
-                if (!isLiffReady) {
-                    showDebug('⚠️ LIFF ไม่พร้อม - ข้ามการส่งข้อความ LINE');
-                    showMessage('success', `✅ บันทึกข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
-                } else {
-                    try {
-                        showDebug('กำลังส่งข้อความไปยัง LINE Chat...');
-                        
-                        const passengerInfo = [
-                            adults > 0 ? `ผู้ใหญ่ ${adults} คน` : '',
-                            children > 0 ? `เด็ก ${children} คน` : '',
-                            infants > 0 ? `ทารก ${infants} คน` : ''
-                        ].filter(Boolean).join(', ');
-                        
-                        let msg = `✅ รับคำขอเช็คราคาตั๋วเรียบร้อยแล้วค่ะ\n━━━━━━━━━━━━━━━━\n📋 หมายเลขคำขอ: ${reqNum}\n\n🛫 ${tripType}: ${from} → ${to}\n📅 ${tripType === 'ไป-กลับ' ? `เดินทาง: ${departDate} - ${returnDate}` : `เดินทางวันที่: ${departDate}`}\n\n👥 ผู้โดยสาร: ${passengerInfo}\n💺 ชั้นโดยสาร: ${seatClass}`;
-                        
-                        if (airline && airline !== '-') {
-                            msg += `\n✈️ สายการบิน: ${airline}`;
-                        }
-                        
-                        if (directFlight) {
-                            msg += `\n✅ บินตรง`;
-                        }
-                        
-                        if (phone && phone !== '-') {
-                            msg += `\n📞 เบอร์: ${phone}`;
-                        }
-                        
-                        if (specialRequest && specialRequest !== '-') {
-                            msg += `\n\n📝 รายละเอียดเพิ่มเติม:\n${specialRequest}`;
-                        }
-                        
-                        msg += `\n\n💬 เจ้าหน้าที่จะติดต่อกลับและแจ้งรายละเอียดให้ทราบโดยเร็วที่สุดค่ะ`;
-                        
-                        await liff.sendMessages([{
-                            type: 'text',
-                            text: msg
-                        }]);
-                        
-                        showDebug('✅ ส่งข้อความ LINE สำเร็จ');
-                        showMessage('success', `✅ ส่งคำขอสำเร็จ! หมายเลข: ${reqNum}`);
-                        
-                        setTimeout(() => {
-                            liff.closeWindow();
-                        }, 2000);
-                        
-                    } catch (lineError) {
-                        console.error('LINE Error:', lineError);
-                        showDebug(`⚠️ LINE Error: ${lineError.message}`);
-                        showMessage('success', `✅ บันทึกข้อมูลสำเร็จ! หมายเลข: ${reqNum}`);
-                    }
-                }
-                
-            } catch (error) {
-                console.error('Submit Error:', error);
-                showDebug(`❌ Error: ${error.message}`);
-                showMessage('error', '❌ เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
-            } finally {
-                showLoading(false);
-            }
-        });
-    </script>
-</body>
-</html>
