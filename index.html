@@ -15,7 +15,10 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-        }
+        });
+    </script>
+</body>
+</html>
         .container { 
             max-width: 600px; 
             width: 100%;
@@ -481,4 +484,121 @@
                 }
                 
                 if (type === 'adult' && val < infantCount) {
-                    showMessage('error', '⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารก
+                    showMessage('error', '⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารกมากกว่า');
+                    val = infantCount;
+                }
+                
+                this.value = val;
+            });
+        });
+        
+        // Submit form
+        document.getElementById('submitBtn').addEventListener('click', async () => {
+            ['fromGroup', 'toGroup', 'departGroup', 'returnGroup', 'phoneGroup'].forEach(clearError);
+            
+            const tripType = document.querySelector('input[name="trip"]:checked').value;
+            const from = document.getElementById('from').value.trim();
+            const to = document.getElementById('to').value.trim();
+            const departDateValue = departPicker.value;
+            const returnDateValue = returnPicker.value;
+            const phone = document.getElementById('phone').value.trim();
+            const airline = document.getElementById('airline').value.trim();
+            const directFlight = document.getElementById('directFlight').checked;
+            const seatClass = document.getElementById('class').value;
+            const specialRequest = document.getElementById('specialRequest').value.trim();
+            
+            const adults = parseInt(document.getElementById('adult-count').value) || 1;
+            const children = parseInt(document.getElementById('child-count').value) || 0;
+            const infants = parseInt(document.getElementById('infant-count').value) || 0;
+            
+            let hasError = false;
+            
+            if (!from) {
+                showError('fromGroup', 'กรุณากรอกต้นทาง');
+                hasError = true;
+            }
+            
+            if (!to) {
+                showError('toGroup', 'กรุณากรอกปลายทาง');
+                hasError = true;
+            }
+            
+            if (!departDateValue) {
+                showError('departGroup', 'กรุณาเลือกวันที่ขาไป');
+                hasError = true;
+            }
+            
+            if (tripType === 'ไป-กลับ') {
+                if (!returnDateValue) {
+                    showError('returnGroup', 'กรุณาเลือกวันที่ขากลับ');
+                    hasError = true;
+                } else if (new Date(returnDateValue) < new Date(departDateValue)) {
+                    showError('returnGroup', 'วันที่กลับต้องมากกว่าหรือเท่ากับวันที่ไป');
+                    hasError = true;
+                }
+            }
+            
+            if (phone && !validatePhone(phone)) {
+                showError('phoneGroup', 'เบอร์โทรศัพท์ไม่ถูกต้อง (ต้องขึ้นต้นด้วย 0 และมี 9-10 หลัก)');
+                hasError = true;
+            }
+            
+            if (hasError) {
+                showMessage('error', '⚠️ กรุณาตรวจสอบข้อมูลที่กรอก');
+                return;
+            }
+            
+            if (!isLiffReady || !userProfile) {
+                showMessage('error', '❌ ระบบยังไม่พร้อม กรุณารอสักครู่หรือรีเฟรชหน้าเว็บ');
+                return;
+            }
+            
+            const bookingData = {
+                tripType,
+                from,
+                to,
+                departDate: departDateValue,
+                departDateThai: formatDateThai(departDateValue),
+                returnDate: tripType === 'ไป-กลับ' ? returnDateValue : '',
+                returnDateThai: tripType === 'ไป-กลับ' ? formatDateThai(returnDateValue) : '',
+                adults,
+                children,
+                infants,
+                seatClass,
+                airline: airline || 'ไม่ระบุ',
+                directFlight: directFlight ? 'ใช่' : 'ไม่',
+                phone: phone || 'ไม่ระบุ',
+                specialRequest: specialRequest || 'ไม่มี',
+                userId: userProfile.userId,
+                userName: userProfile.displayName,
+                timestamp: new Date().toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' })
+            };
+            
+            showLoading(true);
+            showDebug('กำลังส่งข้อมูล...');
+            
+            try {
+                const response = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bookingData)
+                });
+                
+                showDebug('✅ ส่งข้อมูลสำเร็จ');
+                showMessage('success', '✅ ส่งข้อมูลสำเร็จ! เจ้าหน้าที่จะติดต่อกลับเร็วๆ นี้ค่ะ');
+                
+                setTimeout(() => {
+                    if (liff.isInClient()) {
+                        liff.closeWindow();
+                    }
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Submit Error:', error);
+                showDebug(`❌ Error: ${error.message}`);
+                showMessage('error', '❌ เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง');
+            } finally {
+                showLoading(false);
+            }
+        }
