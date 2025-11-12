@@ -37,26 +37,18 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
             overflow: hidden;
             padding: 5px;
-            position: relative;
         }
         .company-logo img { 
             width: 100%; 
             height: 100%; 
             object-fit: contain;
             display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
         }
         .company-logo-text {
             font-size: 28px;
             color: #2e7d32;
             font-weight: bold;
-            display: block;
-            z-index: 1;
-        }
-        .company-logo img.loaded {
-            z-index: 2;
+            display: none;
         }
         .header h1 { font-size: 28px; margin-bottom: 5px; }
         .header p { font-size: 14px; opacity: 0.95; margin-bottom: 8px; }
@@ -356,19 +348,23 @@
         
         // ฟังก์ชันสำรอง fallback สำหรับโลโก้
         function handleLogoError(img) {
-            console.log('Logo load failed, trying alternatives...');
+            console.log('❌ Logo load failed:', img.src);
             const alternatives = [
                 'https://cdn.jsdelivr.net/gh/wanritter-debug/al-hijrah-assets@main/logo.png',
                 'https://raw.githubusercontent.com/wanritter-debug/al-hijrah-assets/refs/heads/main/logo.png'
             ];
             
-            const currentSrc = img.src;
-            const nextAlt = alternatives.find(url => url !== currentSrc);
+            const currentIndex = alternatives.indexOf(img.src);
+            const nextIndex = currentIndex + 1;
             
-            if (nextAlt && !img.dataset.tried) {
-                img.dataset.tried = 'true';
-                img.src = nextAlt;
+            if (nextIndex < alternatives.length && !img.dataset.finalFail) {
+                console.log('🔄 Trying alternative:', alternatives[nextIndex]);
+                img.src = alternatives[nextIndex];
+                if (nextIndex === alternatives.length - 1) {
+                    img.dataset.finalFail = 'true';
+                }
             } else {
+                console.log('💬 Using text fallback: AH&T');
                 img.style.display = 'none';
                 img.nextElementSibling.style.display = 'block';
             }
