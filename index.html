@@ -593,31 +593,42 @@
                 try {
                     showDebug('กำลังส่งข้อความไปยัง LINE Chat...');
                     
-                    const passengerInfo = [
-                        adults > 0 ? `ผู้ใหญ่ ${adults} คน` : '',
-                        children > 0 ? `เด็ก ${children} คน` : '',
-                        infants > 0 ? `ทารก ${infants} คน` : ''
-                    ].filter(Boolean).join(', ');
-                    
-                    let msg = `✅ รับคำขอเช็คราคาตั๋วเรียบร้อยแล้วค่ะ\n━━━━━━━━━━━━━━━━\n📋 หมายเลขคำขอ: ${reqNum}\n\n🛫 ${tripType}: ${from} → ${to}\n📅 ${tripType === 'ไป-กลับ' ? `เดินทาง: ${departDate} - ${returnDate}` : `เดินทางวันที่: ${departDate}`}\n\n👥 ผู้โดยสาร: ${passengerInfo}\n💺 ชั้นโดยสาร: ${seatClass}`;
-                    
-                    if (airline && airline !== 'ไม่ระบุ') {
-                        msg += `\n✈️ สายการบิน: ${airline}`;
-                    }
-                    
-                    if (directFlight) {
-                        msg += `\n✅ บินตรง`;
-                    }
-                    
-                    if (phone && phone !== 'ไม่ระบุ') {
-                        msg += `\n📞 เบอร์: ${phone}`;
-                    }
-                    
-                    if (specialRequest && specialRequest !== 'ไม่มี') {
-                        msg += `\n\n📝 รายละเอียดเพิ่มเติม:\n${specialRequest}`;
-                    }
-                    
-                    msg += `\n\n💬 เจ้าหน้าที่จะติดต่อกลับและแจ้งรายละเอียดให้ทราบโดยเร็วที่สุดค่ะ`;
+const passengerInfo = [
+    adults > 0 ? `ผู้ใหญ่ ${adults} คน` : '',
+    children > 0 ? `เด็ก ${children} คน` : '',
+    infants > 0 ? `ทารก ${infants} คน` : ''
+].filter(Boolean).join(', ');
+
+let msg = `✅ รับคำขอเช็คราคาตั๋วเรียบร้อยแล้วค่ะ\n━━━━━━━━━━━━━━━━\n📋 หมายเลขคำขอ: ${reqNum}\n\n🔷 ประเภทเที่ยวบิน: ${tripType}`;
+
+if (directFlight) {
+    msg += `\n✈️ บินตรง`;
+}
+
+if (airline && airline !== 'ไม่ระบุ') {
+    msg += `\n\n✈️ สายการบิน: ${airline}`;
+}
+
+msg += `\n\n🛫 เส้นทางการเดินทาง:\nต้นทาง: ${from}\nปลายทาง: ${to}`;
+
+msg += `\n\n📅 วันที่เดินทาง:\nขาไป: ${departDate}`;
+if (tripType === 'ไป-กลับ') {
+    msg += `\nขากลับ: ${returnDate}`;
+}
+
+msg += `\n\n👥 จำนวนผู้โดยสาร:\n${passengerInfo}`;
+
+msg += `\n\n💺 ชั้นที่นั่ง: ${seatClass}`;
+
+if (phone && phone !== 'ไม่ระบุ') {
+    msg += `\n\n📞 เบอร์โทรศัพท์: ${phone}`;
+}
+
+if (specialRequest && specialRequest !== 'ไม่มี') {
+    msg += `\n\n📝 รายละเอียดเพิ่มเติม:\n${specialRequest}`;
+}
+
+msg += `\n\n━━━━━━━━━━━━━━━━\n💬 เจ้าหน้าที่จะติดต่อกลับและแจ้งรายละเอียดให้ทราบโดยเร็วที่สุดค่ะ`;
                     
                     await liff.sendMessages([{
                         type: 'text',
