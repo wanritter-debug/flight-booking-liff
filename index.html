@@ -36,13 +36,15 @@
             justify-content: center; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
             overflow: hidden;
-            padding: 5px;
+            padding: 8px;
         }
         .company-logo img { 
             width: 100%; 
             height: 100%; 
-            object-fit: contain;
+            object-fit: cover;
+            object-position: center;
             display: block;
+            border-radius: 50%;
         }
         .company-logo-text {
             font-size: 28px;
@@ -346,7 +348,6 @@
             return /^0[0-9]{8,9}$/.test(phone.replace(/[-\s]/g, ''));
         }
         
-        // ฟังก์ชันสำรอง fallback สำหรับโลโก้
         function handleLogoError(img) {
             console.log('❌ Logo load failed:', img.src);
             const alternatives = [
@@ -486,28 +487,4 @@
                 }
                 
                 if (type === 'adult' && val < infantCount) {
-                    showMessage('error', '⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารกมากกว่า');
-                    val = infantCount;
-                }
-                
-                this.value = val;
-            });
-        });
-        
-        document.getElementById('submitBtn').addEventListener('click', async () => {
-            ['fromGroup', 'toGroup', 'departGroup', 'returnGroup', 'phoneGroup'].forEach(clearError);
-            
-            const tripType = document.querySelector('input[name="trip"]:checked').value;
-            const from = document.getElementById('from').value.trim();
-            const to = document.getElementById('to').value.trim();
-            const departDateValue = departPicker.value;
-            const returnDateValue = returnPicker.value;
-            const phone = document.getElementById('phone').value.trim();
-            const airline = document.getElementById('airline').value.trim();
-            const directFlight = document.getElementById('directFlight').checked;
-            const seatClass = document.getElementById('class').value;
-            const specialRequest = document.getElementById('specialRequest').value.trim();
-            
-            const adults = parseInt(document.getElementById('adult-count').value) || 1;
-            const children = parseInt(document.getElementById('child-count').value) || 0;
-            const infants = parseInt(document.getElementById('infant-count').value) || 0;
+                    showMessage('error', '⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารก
