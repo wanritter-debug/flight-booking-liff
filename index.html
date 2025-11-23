@@ -263,6 +263,24 @@
                     <small>กรุณาระบุสายการบินที่ต้องการ (หากไม่มี สามารถเว้นว่างไว้ได้ค่ะ)</small>
                 </div>
             </div>
+            
+
+            <div class="section">
+                <div class="section-title">👥 จำนวนผู้โดยสาร</div>
+                <div class="input-group">
+                    <label>ผู้ใหญ่ (อายุ 12 ปีขึ้นไป)</label>
+                    <input type="number" id="adult-count" min="1" value="1" style="text-align: center; font-size: 18px; font-weight: bold;">
+                </div>
+                <div class="input-group">
+                    <label>เด็ก (อายุ 2-11 ปี)</label>
+                    <input type="number" id="child-count" min="0" value="0" style="text-align: center; font-size: 18px; font-weight: bold;">
+                </div>
+                <div class="input-group">
+                    <label>ทารกนั่งตัก (อายุต่ำกว่า 2 ปี)</label>
+                    <input type="number" id="infant-count" min="0" value="0" style="text-align: center; font-size: 18px; font-weight: bold;">
+                </div>
+            </div>
+            
             <div class="section">
                 <div class="section-title">✈️ เส้นทางการเดินทาง</div>
                 <div class="location-inputs">
@@ -298,21 +316,7 @@
                     </div>
                 </div>
             </div>
-            <div class="section">
-                <div class="section-title">👥 จำนวนผู้โดยสาร</div>
-                <div class="passenger-row">
-                    <div class="passenger-info"><h3>ผู้ใหญ่</h3><p>อายุ 12 ปีขึ้นไป</p></div>
-                    <input type="number" class="counter-input" id="adult-count" min="1" value="1">
-                </div>
-                <div class="passenger-row">
-                    <div class="passenger-info"><h3>เด็ก</h3><p>อายุ 2-11 ปี</p></div>
-                    <input type="number" class="counter-input" id="child-count" min="0" value="0">
-                </div>
-                <div class="passenger-row">
-                    <div class="passenger-info"><h3>ทารกนั่งตัก</h3><p>อายุต่ำกว่า 2 ปี</p></div>
-                    <input type="number" class="counter-input" id="infant-count" min="0" value="0">
-                </div>
-            </div>
+        
             <div class="section">
                 <div class="section-title">💺 ชั้นที่นั่ง</div>
                 <div class="input-group">
@@ -544,31 +548,7 @@
             clearError('toGroup');
         });
         
-        document.querySelectorAll('.counter-input').forEach(input => {
-            input.addEventListener('input', function() {
-                const type = this.id.replace('-count', '');
-                let val = parseInt(this.value) || 0;
                 
-                if (type === 'adult' && val < 1) val = 1;
-                if (val < 0) val = 0;
-                
-                const adultCount = type === 'adult' ? val : parseInt(document.getElementById('adult-count').value);
-                const infantCount = type === 'infant' ? val : parseInt(document.getElementById('infant-count').value);
-                
-                if (type === 'infant' && val > adultCount) {
-                    showMessage('error', '⚠️ จำนวนทารกต้องไม่เกินจำนวนผู้ใหญ่');
-                    val = adultCount;
-                }
-                
-                if (type === 'adult' && val < infantCount) {
-                    showMessage('error', '⚠️ ไม่สามารถลดผู้ใหญ่ได้ เนื่องจากมีทารกมากกว่า');
-                    val = infantCount;
-                }
-                
-                this.value = val;
-            });
-        });
-        
         document.getElementById('submitBtn').addEventListener('click', async () => {
             
             ['fromGroup', 'toGroup', 'departGroup', 'returnGroup', 'phoneGroup'].forEach(clearError);
